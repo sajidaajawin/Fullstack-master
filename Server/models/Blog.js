@@ -2,7 +2,11 @@ const db = require("../lib/db");
 
 function getAllBlog() {
   return db.query(
-    "SELECT * FROM Blog WHERE is_deleted = false AND approved = false "
+    `SELECT Blog.*, users.username, users.email
+    FROM Blog
+    JOIN users ON Blog.user_id = users.user_id
+    WHERE Blog.is_deleted = false AND Blog.approved = false;`
+    
   );
 }
 
@@ -81,21 +85,24 @@ function updateblog(
 }
 
 //DashBoard
-function approved(blog_id) {
-  const queryText = `SELECT * FROM Blog WHERE blog_id = $1 AND approved = true`;
-  const result = [blog_id];
+function approved() {
+  const queryText = `SELECT Blog.*, users.username, users.email
+  FROM Blog
+  JOIN users ON Blog.user_id = users.user_id
+  WHERE Blog.is_deleted = false AND Blog.approved = true;`;
+  // const result = [blog_id];
 
-  return db.query(queryText, result);
+  return db.query(queryText);
 }
 //DashBoard
 function approvedUpdate(blog_id) {
-  const queryText = `UPDATE blog SET approved = false WHERE blog_id = $1 RETURNING *`;
+  const queryText = `UPDATE blog SET approved = true WHERE blog_id = $1 RETURNING *`;
   const result = [blog_id];
 
   return db.query(queryText, result);
 }
 function approvedReject(blog_id) {
-  const queryText = `UPDATE blog SET approved = true WHERE blog_id = $1 RETURNING *`;
+  const queryText = `UPDATE blog SET is_deleted = true , approved = false WHERE blog_id = $1 RETURNING *`;
   const result = [blog_id];
 
   return db.query(queryText, result);

@@ -81,10 +81,9 @@ const updateblog = async (req, res) => {
 
 //DashBoard
 const approved = async (req, res) => {
-  const blog_id = req.params.blog_id;
-  console.log(blog_id);
+  // const blog_id = req.params.blog_id;
   try {
-    const result = await blog.approved(blog_id);
+    const result = await blog.approved();
     return res.status(200).json({result:result.rows});
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
@@ -108,6 +107,7 @@ const approvedUpdate = async (req, res) => {
 
 const approvedReject = async (req, res) => {
   const blog_id = req.params.blog_id;
+  console.log("hello", req.params.blog_id)
 
   try {
     const result = await blog.approvedReject(blog_id);

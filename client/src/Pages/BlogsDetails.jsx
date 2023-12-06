@@ -13,7 +13,7 @@ function BlogsDetails() {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:8000/getBlog/${blogId}`);
-        const blogDetails = response.data;
+        const blogDetails = response.data.result;
 
         setBlogData(blogDetails);
         setLoading(false);
@@ -34,6 +34,7 @@ function BlogsDetails() {
 
   return (
     <>
+    <Nav />
 <main>
   <article>
     <header class="mx-auto mt-20 max-w-screen-lg rounded-t-lg bg-white pt-16 text-center shadow-lg">
@@ -154,6 +155,7 @@ function BlogsDetails() {
     </div>
   </div>
 </aside>
+<Footer />
 </>
 
   );

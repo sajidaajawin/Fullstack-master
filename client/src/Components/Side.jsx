@@ -226,7 +226,7 @@ const Side = () => {
     <UserProfile />
       </div>
      
-      <div className={`${page == "WishList" ? "block" : "hidden"} w-full h-[80rem]  ml-40 mr-20 mb-60`}>
+      <div className={`${page == "WishList" ? "block" : "hidden"} w-full h-[40rem]  ml-40 mr-20 mb-60`}>
      <WishList/>
       </div>
       {/* <div className={`${page == "Blog" ? "block" : "hidden"} w-full`}>

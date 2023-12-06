@@ -6,7 +6,6 @@ const Nav = () => {
 
   function check() {
     if (window.localStorage.getItem('token')) {
-      console.log("S");
       return true;
     } else {
       return false;

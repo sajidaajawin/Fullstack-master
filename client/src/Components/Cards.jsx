@@ -88,14 +88,16 @@ function Cards() {
 
       <div className="p-24 flex flex-wrap items-center justify-center">
         {products.slice(0, 3).map((product) => (
-          <div key={product.product_id} className="w-72 bg-white shadow-md rounded-lg mx-4 my-8">
-            <img
-              className="object-cover rounded-tl-lg rounded-tr-lg"
-              src={product.product_img}
-              alt={product.product_name}
-            />
-            <div className="px-5 py-3 space-y-2">
-              <h3 className="text-lg">{product.product_name}</h3>
+       <div key={product.product_id} className="w-72 bg-white shadow-md rounded-lg mx-4 my-8">
+       <div style={{ height: '200px', overflow: 'hidden', position: 'relative' }}>
+         <img
+           className="object-cover rounded-tl-lg rounded-tr-lg absolute h-full w-full"
+           src={product.product_img}
+           alt={product.product_name}
+         />
+       </div>
+       <div className="px-5 py-3 space-y-2">
+              <h3 className="text-md">{product.product_name}</h3>
               <p className="space-x-2">
                 <span className="text-2xl font-semibold">{`$${product.price}`}</span>
               </p>

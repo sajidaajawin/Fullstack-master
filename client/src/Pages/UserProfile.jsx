@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import swal from "sweetalert";
 
 export const setLocalStorage = (key, value) => {
   localStorage.setItem(key, JSON.stringify(value));
@@ -11,10 +12,9 @@ export const getLocalStorage = (key) => {
     return value ? JSON.parse(value) : null;
   } catch (error) {
     console.error(`Error parsing JSON for key '${key}':`, error);
-    return null; 
+    return null;
   }
 };
-
 
 export const removeLocalStorage = (key) => {
   localStorage.removeItem(key);
@@ -25,25 +25,27 @@ const UserProfile = () => {
   const [formValues, setFormValues] = useState({});
   const [photoName, setPhotoName] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
-console.log("ccccccccccccccccc",user)
   const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const fileInputRef = useRef(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-  
-    console.log('Stored Token:', token);  
-  
+
+    console.log('Stored Token:', token);
+
     if (token !== null) {
       axios.defaults.headers.common["Authorization"] = `${localStorage.getItem(
         "token"
       )}`;
       axios.get("http://localhost:8000/user")
         .then((response) => {
-console.log("🤣🤣🤣🤣🤣🤣🤣",response )
-setFormValues(response.data[0])
+          console.log("User Data:", response.data[0])
+          setFormValues(response.data[0])
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -52,7 +54,6 @@ setFormValues(response.data[0])
       setUser(false);
     }
   }, []);
-  
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -85,20 +86,26 @@ setFormValues(response.data[0])
       const updatedUser = new FormData();
       updatedUser.append('user_id', user.user_id);
       updatedUser.append('username_user', formValues.username);
-      updatedUser.append('email', formValues.email );
-      // updatedUser.append('website', formValues.website );
-      // updatedUser.append('profileimage', imageFile);
+      updatedUser.append('email', formValues.email);
+
       try {
         axios.defaults.headers.common["Authorization"] = `${localStorage.getItem(
           "token"
         )}`;
         const response = await axios.put(
           `http://localhost:8000/updateuser`,
-          formValues,
-        
+          formValues
         );
         console.log("Server Response:", response.data[0]);
         setSuccessMessage("Profile updated successfully!");
+
+        // Add SweetAlert for profile update success
+        swal({
+          title: "Success",
+          text: "Profile updated successfully!",
+          icon: "success",
+          button: "OK",
+        });
       } catch (error) {
         console.error("Error updating Information", error);
         setSuccessMessage("");
@@ -106,7 +113,48 @@ setFormValues(response.data[0])
       }
     }
   };
-  
+
+  const handleChangePassword = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (newPassword !== confirmPassword) {
+        setConfirmPasswordError('Passwords do not match');
+        return;
+      }
+
+      const response = await axios.put(
+        'http://localhost:8000/updateuser',
+        {
+          user_id: user.user_id,
+          currentPassword: formValues.password,
+          newPassword,
+        },
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      console.log('Password Change Response:', response.data);
+      setSuccessMessage('Password changed successfully!');
+      setError('');
+      setConfirmPasswordError('');
+
+      // Add SweetAlert for password change success
+      swal({
+        title: "Success",
+        text: "Password changed successfully!",
+        icon: "success",
+        button: "OK",
+      });
+    } catch (error) {
+      console.error('Error changing password:', error.response?.data || error.message);
+      setSuccessMessage('');
+      setError('Failed to change password. Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex justify-center ml-20 items-center">
       <div className="w-9/12 h-5/6 bg-white my-6 md:ml-24 px-10 py-8 rounded-lg shadow-md">
@@ -149,7 +197,7 @@ setFormValues(response.data[0])
           <div className="mt-8 space-y-6">
             <div className="flex flex-col justify-start">
               <label htmlFor="username" className="self-start p-2 text-[#C08261]">
-            Full Name
+                Full Name
               </label>
               <input
                 className="w-full mb-3 p-2 border rounded-md bg-gray-200"
@@ -174,17 +222,32 @@ setFormValues(response.data[0])
 
             <div className="flex flex-col justify-start">
               <label htmlFor="password" className="self-start p-2 text-[#C08261]">
-             paswoord
+                Password
               </label>
               <input
                 className="w-full p-2 border rounded-md bg-gray-200"
                 onChange={handleInputChange}
-                // value={formValues.password}
+                type="password"
                 name="password"
               />
             </div>
-          </div>
 
+            <div className="flex flex-col justify-start">
+              <label htmlFor="confirmPassword" className="self-start p-2 text-[#C08261]">
+                Confirm Password
+              </label>
+              <input
+                className="w-full p-2 border rounded-md bg-gray-200"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                type="password"
+                name="confirmPassword"
+                value={confirmPassword}
+              />
+              {confirmPasswordError && (
+                <p className="text-red-600 mt-2">{confirmPasswordError}</p>
+              )}
+            </div>
+          </div>
           <div className="flex justify-end mt-6">
             <button
               className="w-1/4 mr-3 p-2 bg-red-500 hover:bg-red-600 text-white rounded-xl"
@@ -193,19 +256,18 @@ setFormValues(response.data[0])
               Cancel
             </button>
             <button
-              className="w-auto py-2 px-3 bg-[#C08261] text-white rounded-xl"
+              className="w-auto py-2 px-3 bg-[#C08261] text-white rounded-xl mr-2"
               onClick={handleSaveChanges}
             >
               Save Changes
             </button>
+            <button
+              className="w-auto py-2 px-3 bg-[#C08261] text-white rounded-xl"
+              onClick={handleChangePassword}
+            >
+              Change Password
+            </button>
           </div>
-
-          {successMessage && (
-            <p className="text-green-600 mt-2">{successMessage}</p>
-          )}
-          {error && (
-            <p className="text-red-600 mt-2">{error}</p>
-          )}
         </form>
       </div>
     </div>

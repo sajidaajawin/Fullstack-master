@@ -9,15 +9,23 @@ function AllBlogs() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData =  () => {
       try {
-        const response = await axios.get('http://localhost:8000/getAllBlog');
-        const blogData = response.data;
+        // Fetch data from your API
+        const response =  axios.get("http://localhost:8000/approvedblog").then((response)=>{
+        console.log(response.data.result[0]);
+        const AllBlogs = response.data.result
+        setBlogs(AllBlogs);
 
-        setBlogs(blogData);
+        })
+        // Log the data array specifically
+        // console.log('API Data:', response.data);
+
+        // Set blog posts and loading to false once data is fetched
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data from API:', error);
+        // Set loading to false on error
         setLoading(false);
       }
     };

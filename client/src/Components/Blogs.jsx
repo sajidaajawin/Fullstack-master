@@ -6,21 +6,19 @@ const Blogs = () => {
   const [blog, setBlog] = useState([]);
   const [loading, setLoading] = useState(true);
   console.log(blog)
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch data from your API
-        const response = await axios.get("http://localhost:8000/getAllBlog");
-        console.log("hi");
-        // Log the data array specifically
-        console.log('API Data:', response.data);
+        const response = await axios.get("http://localhost:8000/approvedblog");
+        console.log("🤣🤣🤣", response.data.result);
 
-        // Set blog posts and loading to false once data is fetched
-        setBlog(response.data);
+        const data = response.data.result;
+
+        setBlog(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching data from API:', error);
+        console.error("Error fetching data from API:", error);
         // Set loading to false on error
         setLoading(false);
       }
@@ -28,6 +26,7 @@ const Blogs = () => {
 
     fetchData();
   }, []);
+
 
   if (loading) {
     return <p>Loading...</p>; // You can replace this with a loading spinner or any other loading indicator

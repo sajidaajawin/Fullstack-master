@@ -14,7 +14,7 @@ router.post(
   ProductsController.newblog
 );
 
-// router.get("/products/:page/:limit", ProductsController.getBlogs);
+router.get("/products/:page/:limit", ProductsController.getpagi);
 router.get("/products", ProductsController.getBlogs);
 router.get("/blog/:id", ProductsController.getblog);
 router.get("/product/:category_id", ProductsController.product);

@@ -57,31 +57,43 @@ const getBlogs = async (req, res) => {
 // };
 
 // Assuming your route handler uses EJS to render the template
-// const getBlogs = async (req, res) => {
-//   try {
-//     // const page = req.params.page;
-//     // const limit = req.params.limit;
-//     // const offset = (page - 1) * limit;
-//     // // console.log("I am here",page ,limit );
-//     // console.log(page, limit);
+const getpagi = async (req, res) => {
+  try {
+    const page = req.params.page;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+    console.log("I am here", page, limit);
+    console.log("🤣🤣🤣🤣🤣", page, limit);
 
-//     // const result = await products.getAllblogs(limit, offset);
+    const result = await products.getAllblogss(limit, offset);
 
-//     // const totalCount = await products.getTotalCount(); // Implement a function to get the total count of products
-//     // const totalPages = Math.ceil(totalCount / limit);
+    if (!result) {
+      console.error("Error fetching blog data");
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
 
-//     // const pagination = {
-//     //   current: page,
-//     //   prev: page > 1 ? page - 1 : null,
-//     //   next: page < totalPages ? parseInt(page) + 1 : null,
-//     //   total: totalPages,
-//     // };
+    const totalCount = await products.getTotalCount(); // Implement a function to get the total count of products
 
-//     res.json({result,totalPages,pagination});
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    if (totalCount === undefined || totalCount === null) {
+      console.error("Error fetching total count");
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const pagination = {
+      current: page,
+      prev: page > 1 ? page - 1 : null,
+      next: page < totalPages ? parseInt(page) + 1 : null,
+      total: totalPages,
+    };
+
+    res.json({ result, totalPages, pagination });
+  } catch (error) {
+    console.error("Error in getpagi:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 // router.get("/products", ProductsController.getBlogs);
 
@@ -160,4 +172,5 @@ module.exports = {
   deleteproduct,
   updateproduct,
   product,
+  getpagi
 };

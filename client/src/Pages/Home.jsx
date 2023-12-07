@@ -16,7 +16,6 @@ const Home = () => {
       <Nav />
       <Hero />
       <Benifts />
-      {/* <Categories /> */}
       <Cards />
       < Courses />
  

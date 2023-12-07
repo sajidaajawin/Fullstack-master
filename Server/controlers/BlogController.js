@@ -34,7 +34,7 @@ const getBlogidUser = async (req, res) => {
 const newblog = async (req, res) => {
   const url = res.locals.site;
   const user_id = req.user;
-
+console.log(url , user_id)
   try {
     // console.log(req.body);
     const { title, content } = req.body;

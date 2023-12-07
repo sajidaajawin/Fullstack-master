@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Nav from '../Components/Nav';
 import Footer from '../Components/Footer';
+import BlogForm from '../Components/BlogForm';
 
 function AllBlogs() {
   const [blogs, setBlogs] = useState([]);
@@ -58,6 +59,7 @@ function AllBlogs() {
         </Link>
       ))}
     </div>
+    <BlogForm />
     <Footer />
     </>
   );

@@ -98,21 +98,23 @@ const db = require("../lib/db");
 function getAllblogs() {
   return db.query("SELECT * FROM products WHERE is_deleted = false");
 }
-// Assuming you have a 'products' table in your database
-// const getTotalCount = async () => {
-//   const result = await db.query("SELECT COUNT(*) FROM products WHERE is_deleted = false");
-//   return result.rows[0].count;
-// };
 
-// function getAllblogs(limit, offset) {
-//   const query = `
-//     SELECT * FROM products 
-//     WHERE is_deleted = false
-//     LIMIT $1 OFFSET $2
-//   `;
-//   console.log("I am here ",limit,offset)
-//   return db.query(query, [limit, offset]);
-// }
+
+// Assuming you have a 'products' table in your database
+const getTotalCount = async () => {
+  const result = await db.query("SELECT COUNT(*) FROM products WHERE is_deleted = false");
+  return result.rows[0].count;
+};
+
+function getAllblogss(limit, offset) {
+  const query = `
+    SELECT * FROM products 
+    WHERE is_deleted = false
+    LIMIT $1 OFFSET $2
+  `;
+  console.log("I am here ",limit,offset)
+  return db.query(query, [limit, offset]);
+}
 
 function getBlog(product_id) {
   const queryText =
@@ -215,6 +217,7 @@ module.exports = {
   getBlog,
   deleteproduct,
   updateproduct,
-  // getTotalCount,
+  getTotalCount,
   product,
+  getAllblogss
 };

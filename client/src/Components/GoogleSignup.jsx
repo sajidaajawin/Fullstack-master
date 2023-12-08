@@ -8,50 +8,43 @@ export default function GoolgeSignInButton() {
   const navigate = useNavigate();
 
   const [userGoogle, setUserGoogle] = useState([]);
+
   console.log(userGoogle);
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => setUserGoogle(codeResponse),
     onError: (error) => console.log("Login Failed:", error),
   });
 
-  useEffect(() => {
-    if (userGoogle.length !== 0) {
-      axios
-        .get(
-          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`,
-          {
-            headers: {
-              Authorization: `Bearer ${userGoogle.access_token}`,
-              Accept: "application/json",
-            },
-          }
-        )
-        .then(async (res) => {
-          window.location.href = "/";
+ useEffect(() => {
+  console.log("userGoogle:", userGoogle);
 
-          /// issa api res.body
-          try {
-            const response = await axios.post(
-              "http://localhost:8000/google",
-              res.data
-            );
-            console.log(res);
+  if (userGoogle.access_token) {
+    axios
+      .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`)
+      .then(async (res) => {
+        console.log("Google User Info:", res.data);
 
-            console.log(response.data);
-            // const user = response.data.user;
-            const token = response.data.token;
-            // window.Cookie.set("token", token);
-            localStorage?.setItem("token", token);
-            // console.log(response.data.token);
-            // console.log("object", token);
-            // navigate('/');
-          } catch (error) {
-            console.log(error);
+        try {
+          const response = await axios.post("http://localhost:8000/google", res.data);
+          console.log("Server response:", response.data);
+
+          const token = response.data.token;
+          console.log("Token:", token);
+
+          // Make sure the token is not undefined or null before storing it
+          if (token) {
+            localStorage.setItem("token", token);
+            navigate('/');
           }
-        })
-        .catch((err) => console.log(err.message));
-    }
-  }, [userGoogle]);
+
+          // Rest of your code...
+        } catch (error) {
+          console.log("Error:", error);
+        }
+      })
+      .catch((err) => console.log("Google User Info Error:", err.message));
+  }
+}, [userGoogle,navigate]);
 
   return (
     <button

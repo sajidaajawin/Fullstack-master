@@ -4,6 +4,7 @@ import CustomPagination from "../Components/CustomPagination";
 import Card from '../Components/Card';
 import Nav from "../Components/Nav";
 import Footer from "../Components/Footer";
+import BreadCrumb from "../Components/BreadCrumb";
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -68,6 +69,7 @@ const AllProducts = () => {
   return (
     <>
     <Nav />
+    {/* <BreadCrumb /> */}
     <div className="lg:mx-32">
       <form>
         <div className="flex">

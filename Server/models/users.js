@@ -23,13 +23,30 @@ function getEmail(email) {
 //   const values = [username, email, password];
 //   return db.query(queryText, values);
 // }
+// يفترض أن هناك اتصالاً بقاعدة البيانات ويتم تخزينه في db
+const setActiveStatus = async (user_id, active) => {
+  try {
+    const query = `
+      UPDATE users
+      SET active = $1
+      WHERE user_id = $2
+    `;
 
-function newUser(username, email, password, role) {
+    await db.query(query, [active, user_id]);
+  } catch (error) {
+    throw error;
+  }
+};
+
+// وتُستخدم الدالة كالتالي:
+
+function newUser(username, email, password, role, user_img) {
+  // const user_img = picture;
   // Hash the password before inserting it into the database
   return bcrypt.hash(password, 10).then((hashedPassword) => {
     const queryText =
-      "INSERT INTO users (username, email, password , role)  VALUES ($1, $2, $3 ,$4) ";
-    const values = [username, email, hashedPassword, role];
+      "INSERT INTO users (username, email, password , role ,user_img)  VALUES ($1, $2, $3 ,$4,$5) ";
+    const values = [username, email, hashedPassword, role, user_img];
     return db.query(queryText, values);
   });
 }
@@ -81,6 +98,11 @@ function loginUser(user_id, email, password) {
   const value = [user_id, email, password];
   return db.query(queryText, value);
 }
+function getEmailAdmin(email) {
+  const queryText = "SELECT * FROM users WHERE email = $1";
+  const value = [email];
+  return db.query(queryText, value);
+}
 
 async function UserProfile(user_id) {
   const queryText =
@@ -103,4 +125,6 @@ module.exports = {
   decodeToken,
   loginUser,
   UserProfile,
+  setActiveStatus,
+  getEmailAdmin,
 };

@@ -30,7 +30,7 @@ const Nav = () => {
                 </Link>
 
                 <Link
-                  to="/AllProducts"
+                  to="/Products"
                   title=""
                   className="text-base font-medium text-white"
                 >
@@ -38,12 +38,21 @@ const Nav = () => {
                   Products
                 </Link>
 
+                <Link
+                  to="/Blogs"
+                  title=""
+                  className="text-base font-medium text-white"
+                >
+                  {" "}
+             Blogs
+                </Link>
+
                 <Link to="/Aboutus" title="" className="text-base font-medium text-white">
                   {" "}
                   About Us
                 </Link>
 
-                <Link to="Contactus" title="" className="text-base font-medium text-white">
+                <Link to="/contactus" title="" className="text-base font-medium text-white">
                   {" "}
                   Contact Us
                 </Link>

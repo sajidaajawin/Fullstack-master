@@ -51,7 +51,24 @@ const decode = (req, res) => {
   }
 };
 const deleteUser = async (req, res) => {
-  const user_id = req.params.id;
+  const user_id = req.params.user_id;
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
+  console.log("hi",  req.params.user_id)
   try {
     const result = await User.deleteUser(user_id);
     return res.status(200).json(result.rows);
@@ -67,7 +84,12 @@ const updateUser = async (req, res) => {
     // تشفير كلمة المرور
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const result = await User.updateUser(user_id, username, email, hashedPassword);
+    const result = await User.updateUser(
+      user_id,
+      username,
+      email,
+      hashedPassword
+    );
     console.log(user_id, username, email, hashedPassword);
     return res.status(200).json(result.rows);
   } catch (error) {
@@ -94,6 +116,49 @@ const loginUser = async (req, res) => {
           { user_id: user.user_id, username: user.username, role: user.role }, // Payload
           key
         );
+
+        // Update the 'active' field to true in the database
+        await User.setActiveStatus(user.user_id, true);
+
+        console.log(token);
+        res.cookie("token", token, { httpOnly: true });
+
+        return res.json({ user, token });
+      } else {
+        return res.json({ message: "Incorrect password" });
+      }
+    } else {
+      return res.json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.error("Error logging in:", error);
+    throw error;
+  }
+};
+const loginAdmin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const result = await User.getEmailAdmin(email);
+    console.log(result.rows);
+    if (result.rows.length > 0) {
+      // User found
+      const user = result.rows[0];
+
+      // Verify the provided password
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (passwordMatch) {
+        // Passwords match, create a token
+        const token = jwt.sign(
+          { user_id: user.user_id, username: user.username, role: user.role }, // Payload
+          key
+        );
+
+        // Check the role before responding
+        if (user.role === "user") {
+          return res.json({ message: "You Are Not Admin 😒" });
+        }
+
         console.log(token);
         res.cookie("token", token, { httpOnly: true });
 
@@ -108,11 +173,24 @@ const loginUser = async (req, res) => {
     throw error;
   }
 };
+const logout = async (req, res) => {
+  const user_id = req.user;
+  try {
+    await User.setActiveStatus(user_id, false);
+    res.clearCookie("token");
+    return res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.error("Error logging out:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 const google = async (req, res) => {
   try {
-    const { id, email, name } = req.body;
-    // console.log(password);
+    console.log("object");
+    const { id, email, name, picture } = req.body;
+    const user_img = picture;
+
     const role = "user";
     const existUser = await User.getEmail(email);
 
@@ -130,7 +208,7 @@ const google = async (req, res) => {
         throw error;
       }
     }
-    const newUser = await User.newUser(name, email, id, role);
+    const newUser = await User.newUser(name, email, id, role, user_img);
 
     return res.status(200).json(newUser.rows);
   } catch (error) {
@@ -162,4 +240,6 @@ module.exports = {
   decode,
   google,
   getUserProfile,
+  logout,
+  loginAdmin,
 };

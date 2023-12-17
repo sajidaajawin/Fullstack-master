@@ -3,11 +3,13 @@ import Home from "./Pages/Home";
 import Details from "./Pages/Details";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AllProducts from "./Pages/AllProducts";
+import Contact from "./Pages/ContactUs";
 import Categories from "./Components/Categories";
 import LoginForm from "./Pages/Login";
 import RegisterForm from "./Pages/Regestier";
 import Payment from "./Pages/Payment";
 import Cart from "./Pages/Cart";
+import UserProfile from "./Pages/UserProfile";
 import YourComponent from "./admin/Sidebar";
 import NotFound from "./Pages/NotFound";
 import AllBlogs from "./Pages/AllBlogs";
@@ -16,17 +18,16 @@ import { OrderProvider } from "./OrderContext/OrderContext";
 import AboutUs from "../src/Pages/AboutUs"
 import ContactUs from "./Pages/ContactUs";
 import Side from "./Components/Side";
-import { ChatProvider } from "./ChatContext/ChatContext";
+import Chat from "./Components/Chat";
 
 const App = () => {
   return (
     <Router>
       <OrderProvider>
-        <ChatProvider>   
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/details/:id" element={<Details />} />
-          <Route path="/Products" element={<AllProducts />} />
+          <Route path="/AllProducts" element={<AllProducts />} />
           <Route path="/ContactUs" element={<ContactUs/>} />
           <Route path="/Categories" element={<Categories />} />
           <Route path="/login" element={<LoginForm />} />
@@ -36,12 +37,12 @@ const App = () => {
           <Route path="/side" element={<Side />} />
           <Route path="/admin" element={<YourComponent />} />
           <Route path="*" element={<NotFound />} />
-          <Route path="/Blogs" element={<AllBlogs />} />
+          <Route path="/allblogs" element={<AllBlogs />} />
           <Route path="/blogsdetails/:id" element={<BlogsDetails />} />
           {/* <Route path='/payment' element={<PaymentForm />} /> */}
           <Route path="/aboutus" element={<AboutUs />} />
+      <Route path="/chat" element={<Chat />} />
         </Routes>
-        </ChatProvider>
       </OrderProvider>
     </Router>
   );

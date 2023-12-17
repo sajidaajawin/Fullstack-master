@@ -6,6 +6,7 @@ import WishList from "./WishList";
 import Nav from "./Nav";
 import Footer from "./Footer";
 import Workshopsdetails from "./Workshopsdetails";
+import Chat from "./Chat";
 
 export const setLocalStorage = (key, value) => {
     localStorage.setItem(key, JSON.stringify(value));
@@ -185,12 +186,12 @@ const Side = () => {
                   >
                     <span className="mx-2 text-sm font-medium">Workshops</span>
                   </button>
-                  {/* <button
+                  <button
                     className="w-full flex items-center px-3 py-2 text-gray-600 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 dark:hover:text-gray-200 hover:text-gray-700"
-                    onClick={() => setPage("PlanPricing")}
+                    onClick={() => setPage("chat")}
                   >
-                    <span className="mx-2 text-sm font-medium">PlanPricing</span>
-                  </button> */}
+                    <span className="mx-2 text-sm font-medium">chat</span>
+                  </button>
                 </div>
             
                   
@@ -234,9 +235,9 @@ const Side = () => {
       <div className={`${page == "Workshopsdetails" ? "block" : "hidden"}  w-full h-[40rem]  ml-40 mr-20 mb-60`}>
       <Workshopsdetails/>
       </div>
-      {/* <div className={`${page == "PlanPricing" ? "block" : "hidden"} w-full`}>
-      <Workshopsdetails/>
-      </div> */}
+      <div className={`${page == "chat" ? "block" : "hidden"} w-full`}>
+      <Chat />
+      </div>
 
     </div>
     <Footer />

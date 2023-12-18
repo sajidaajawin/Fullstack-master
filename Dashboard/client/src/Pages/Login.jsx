@@ -9,27 +9,29 @@ function Login() {
   });
 
   const [errors, setErrors] = useState({});
+  const [email, setemail] = useState(null);
+  const [Password, setPassword] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const validateForm = () => {
-    let validationErrors = {};
+  // const validateForm = () => {
+  //   let validationErrors = {};
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email || !emailRegex.test(formData.email)) {
-      validationErrors.email = "Invalid email address";
-    }
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!formData.email || !emailRegex.test(formData.email)) {
+  //     validationErrors.email = "Invalid email address";
+  //   }
 
-    if (!formData.password || formData.password.length < 6) {
-      validationErrors.password = "Password must be at least 6 characters long";
-    }
+  //   if (!formData.password || formData.password.length < 6) {
+  //     validationErrors.password = "Password must be at least 6 characters long";
+  //   }
 
-    setErrors(validationErrors);
-    return Object.keys(validationErrors).length === 0;
-  };
+  //   setErrors(validationErrors);
+  //   return Object.keys(validationErrors).length === 0;
+  // };
 
   const redirectToHome = () => {
     window.location.href = "/dashboard";
@@ -37,10 +39,6 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
 
     try {
       const response = await axios.post(
@@ -60,7 +58,6 @@ function Login() {
           confirmButtonColor: "#C08261",
         });
       } else {
-        // Handle the case where user is not found
         swal.fire({
           icon: "error",
           title: "You Are Not Admin 😒",
@@ -68,14 +65,62 @@ function Login() {
         });
       }
     } catch (error) {
-      console.error("Error logging in:", error);
-      setErrors({ general: "Invalid credentials. Please try again." });
-      swal({
-        icon: "error",
-        title: "Login Failed!",
-        text: "There was an error during login. Please check your credentials and try again.",
-        confirmButtonColor: "#d33",
-      });
+      // console.error("Error logging in:", error);
+
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 400) {
+          // Handle incorrect password
+          return swal.fire({
+            icon: "error",
+            title: "Login Failed!",
+            text: "Incorrect email.",
+            confirmButtonColor: "#d33",
+          });
+        }else
+
+        if (status === 401) {
+          // Handle incorrect password
+          return swal.fire({
+            icon: "error",
+            title: "Login Failed!",
+            text: "Incorrect password.",
+            confirmButtonColor: "#d33",
+          });
+        } else if (status === 404) {
+          // Handle user not found
+          return swal.fire({
+            icon: "error",
+            title: "Login Failed!",
+            text: "User not found.",
+            confirmButtonColor: "#d33",
+          });
+        } else if (status === 403) {
+          // Handle not an admin
+          return swal.fire({
+            icon: "error",
+            title: "Login Failed!",
+            text: "You are not an admin.",
+            confirmButtonColor: "#d33",
+          });
+        } else {
+          // Handle other errors
+          return swal.fire({
+            icon: "error",
+            title: "Login Failed!",
+            text: "There was an error during login. Please try again.",
+            confirmButtonColor: "#d33",
+          });
+        }
+      } else {
+        // Handle other errors (no response from the server)
+        return swal.fire({
+          icon: "error",
+          title: "Login Failed!",
+          text: "There was an error during login. Please try again.",
+          confirmButtonColor: "#d33",
+        });
+      }
     }
   };
 

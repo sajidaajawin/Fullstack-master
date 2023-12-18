@@ -64,14 +64,14 @@ function Statics() {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:py-24 lg:px-8 ml-96">
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-4 mt-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6  ">
+      <div className="grid lg:grid-cols-4 pt-[7rem] pb-[1.5rem] gap-5 sm:grid-cols-2 pt-20">
         {Object.entries(data).map(([key, value]) => (
           <div
             key={key}
-            className="bg-white overflow-hidden shadow sm:rounded-lg"
+            className={`bg-white overflow-hidden shadow sm:rounded-lg  `}
           >
-            <div className="px-4 py-5 sm:p-6">
+            <div className="px-4 py-5   sm:p-6">
               <dl>
                 <dt className="text-sm leading-5 font-medium text-[#C08261] truncate">
                   {key}

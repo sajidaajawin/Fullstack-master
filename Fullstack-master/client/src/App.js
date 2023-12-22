@@ -9,7 +9,6 @@ import LoginForm from "./Pages/Login";
 import RegisterForm from "./Pages/Regestier";
 import Payment from "./Pages/Payment";
 import Cart from "./Pages/Cart";
-import UserProfile from "./Pages/UserProfile";
 import YourComponent from "./admin/Sidebar";
 import NotFound from "./Pages/NotFound";
 import AllBlogs from "./Pages/AllBlogs";
@@ -19,6 +18,9 @@ import AboutUs from "../src/Pages/AboutUs"
 import ContactUs from "./Pages/ContactUs";
 import Side from "./Components/Side";
 import Chat from "./Components/Chat";
+import Reset from "./Components/Rest";
+import Otp from "./Components/Otp";
+import NewPassword from "./Components/NewPassword";
 
 const App = () => {
   return (
@@ -42,6 +44,9 @@ const App = () => {
           {/* <Route path='/payment' element={<PaymentForm />} /> */}
           <Route path="/aboutus" element={<AboutUs />} />
       <Route path="/chat" element={<Chat />} />
+      <Route path="/rest" element={< Reset/>} />
+      <Route path="/otp" element={<Otp />} />
+      <Route path="/newpassword" element={<NewPassword />} />
         </Routes>
       </OrderProvider>
     </Router>

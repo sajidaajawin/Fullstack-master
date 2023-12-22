@@ -23,16 +23,28 @@ router.get("/usernn/:user_id", UserController.getUserProfile);
 //delete/update
 router.put("/deleteuser/:id", UserController.deleteUser);
 router.put(
-    "/updateuser",
-    authentication.authenticateToken,
-    uploadImg.uploadImg,
-    UserController.updateUser
-  );
+  "/updateuser",
+  authentication.authenticateToken,
+  UserController.updateUser
+);
 router.post("/google", UserController.google);
 router.put(
   "/updatepassword",
   authentication.authenticateToken,
   UserController.updatePassword
 );
+router.put(
+  "/updatepasswordmailer",
+  UserController.updatePasswordmailer
+);
+router.put(
+  "/updatedImage",
+  authentication.authenticateToken,
+  uploadImg.uploadImg,
+  UserController.updatedImage
+);
+
+router.post("/sendEmail", UserController.sendEmail);
+router.post("/verificationCode", UserController.verificationCode);
 
 module.exports = router;

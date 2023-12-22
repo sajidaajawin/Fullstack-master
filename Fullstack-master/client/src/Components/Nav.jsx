@@ -21,6 +21,7 @@ const Nav = () => {
   return (
     <div>
       <header>
+        
         {/* lg+ */}
         <div className="bg-[#C08261]">
           <div className="px-4 mx-auto sm:px-6 lg:px-8">

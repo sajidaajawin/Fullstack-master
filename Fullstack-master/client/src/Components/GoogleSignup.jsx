@@ -49,7 +49,7 @@ export default function GoolgeSignInButton() {
   return (
     <button
       id="google-sign-in"
-      className="w-full bg-[#219D80] max-w-xs font-bold hover:bg-[#219D80] hover:text-white  shadow-sm rounded-lg py-3 text-white flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
+      className="w-full bg-[#C08261]  font-bold hover:bg-[#E2C799] hover:text-white mt-4  shadow-sm rounded py-3 text-white flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline"
       onClick={() => login()}
     >
       <div className="bg-white p-2 rounded-full">

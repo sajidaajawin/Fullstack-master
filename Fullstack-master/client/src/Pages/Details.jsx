@@ -97,7 +97,7 @@ function Details() {
             </div>
           </div>
 
-          <div class="lg:col-span-2 lg:row-span-2 lg:row-end-2 mt-60">
+          <div class="lg:col-span-2 lg:row-span-2 lg:row-end-2 mt-60 ">
             <h1 class="sm: text-2xl font-bold text-gray-900 sm:text-3xl">
               {product.product_name}
             </h1>
@@ -167,7 +167,7 @@ function Details() {
 
             <div class="mt-10 flex flex-col items-center justify-between space-y-4 border-t border-b py-4 sm:flex-row sm:space-y-0">
               <div class="flex items-end">
-                <h1 class="text-3xl font-bold">{product.price}</h1>
+                <h1 class="text-3xl font-bold">{product.price} JOD</h1>
               </div>
 
               <button
@@ -193,7 +193,7 @@ function Details() {
               </button>
             </div>
 
-            <ul class="mt-8 space-y-2">
+            <ul class="mt-12 space-y-2">
               <li class="flex items-center text-left text-sm font-medium text-gray-600">
                 <svg
                   class="mr-2 block h-5 w-5 align-middle text-gray-500"

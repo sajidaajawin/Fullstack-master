@@ -7,10 +7,6 @@ import Courses from '../Components/Courses';
 import Benifts from '../Components/Benifts';
 import Blogs from '../Components/Blogs';
 import Banner from '../Components/Banner'
-
-
-
-
 const Home = () => {
   return (
     <div>
@@ -20,11 +16,9 @@ const Home = () => {
       <Benifts />
       <Cards />
       < Courses />
- 
       < Blogs />
       < Footer />
     </div>
   );
 };
-
 export default Home;

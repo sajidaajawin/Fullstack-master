@@ -2,10 +2,12 @@ const User = require("../models/users");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
-
+const key = 'issa';
 require("dotenv").config();
+// const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 
-const key = "issa";
+const db = require("../lib/db");
 
 const newUser = async (req, res) => {
   try {
@@ -26,43 +28,6 @@ const newUser = async (req, res) => {
     console.log(error);
   }
 };
-// const getpagi = async (req, res) => {
-//   try {
-//     const page = req.params.page;
-//     const limit = 5;
-//     const offset = (page - 1) * limit;
-//     console.log("I am here", page, limit);
-//     console.log("🤣🤣🤣🤣🤣", page, limit);
-
-//     const result = await products.getAllblogss(limit, offset);
-
-//     if (!result) {
-//       console.error("Error fetching blog data");
-//       return res.status(500).json({ error: "Internal Server Error" });
-//     }
-
-//     const totalCount = await products.getTotalCount(); // Implement a function to get the total count of products
-
-//     if (totalCount === undefined || totalCount === null) {
-//       console.error("Error fetching total count");
-//       return res.status(500).json({ error: "Internal Server Error" });
-//     }
-
-//     const totalPages = Math.ceil(totalCount / limit);
-
-//     const pagination = {
-//       current: page,
-//       prev: page > 1 ? page - 1 : null,
-//       next: page < totalPages ? parseInt(page) + 1 : null,
-//       total: totalPages,
-//     };
-
-//     res.json({ result, totalPages, pagination, limit });
-//   } catch (error) {
-//     console.error("Error in getpagi:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// }
 
 const getUsers = async (req, res) => {
   try {
@@ -74,14 +39,13 @@ const getUsers = async (req, res) => {
 
     const result = await User.getAllData(limit, offset);
     console.log("issa");
-    // const result = await User.getAllData();
 
     if (!result) {
       console.error("Error fetching blog data");
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
-    const totalCount = await User.getTotalCounts(); // Implement a function to get the total count of products
+    const totalCount = await User.getTotalCounts();
 
     if (totalCount === undefined || totalCount === null) {
       console.error("Error fetching total count");
@@ -127,14 +91,12 @@ const updatePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
   try {
-    // Retrieve the user from the database using the modified method
     const user = await User.getUserById(user_id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Check if the current password provided matches the stored password
     const isPasswordValid = await bcrypt.compare(
       currentPassword,
       user.password
@@ -144,11 +106,38 @@ const updatePassword = async (req, res) => {
       return res.status(401).json({ message: "Current password is incorrect" });
     }
 
-    // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update the user's password
     const result = await User.updatePassword(user_id, hashedPassword);
+
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+const updatePasswordmailer = async (req, res) => {
+  const { email, password } = req.body;
+  console.log(email, password)
+
+  try {
+    const user = await User.getEmail(email);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // const isPasswordValid = await bcrypt.compare(
+    //   user.password
+    // );
+
+    // if (!isPasswordValid) {
+    //   return res.status(401).json({ message: "Current password is incorrect" });
+    // }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const result = await User.updatePasswordd( email, hashedPassword);
 
     return res.status(200).json(result.rows);
   } catch (error) {
@@ -176,21 +165,38 @@ const deleteUser = async (req, res) => {
 };
 const updateUser = async (req, res) => {
   const user_id = req.user;
-  const user_img = res.locals.site;
-  console.log(user_img);
-  const { username, email, phone_number, birthday } = req.body;
-  console.log(birthday);
-  try {
-    // تشفير كلمة المرور
 
+  // const user_img = res.locals.site;
+  // console.log(user_img);
+  const { username, email, phone_number, birthday } = req.body;
+
+  try {
     const result = await User.updateUser(
       user_id,
       username,
       email,
 
-      user_img,
       phone_number,
       birthday
+    );
+
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+const updatedImage = async (req, res) => {
+  const user_id = req.user;
+  const user_img = res.locals.site;
+  console.log(user_img);
+
+  // console.log(birthday);
+  try {
+    const result = await User.updatedImage(
+      user_id,
+
+      user_img
     );
 
     return res.status(200).json(result.rows);
@@ -206,23 +212,20 @@ const loginUser = async (req, res) => {
     const result = await User.getEmail(email);
     console.log(result.rows);
     if (result.rows.length > 0) {
-      // User found
       const user = result.rows[0];
 
-      // Verify the provided password
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (passwordMatch) {
-        // Passwords match, create a token
         const token = jwt.sign(
-          { user_id: user.user_id, username: user.username, role: user.role }, // Payload
+          { user_id: user.user_id, username: user.username, role: user.role },
           key
         );
 
-        // Update the 'active' field to true in the database
         await User.setActiveStatus(user.user_id, true);
 
         console.log(token);
+        // res.cookie("token", token);
         res.cookie("token", token, { httpOnly: true });
 
         return res.json({ user, token });
@@ -243,12 +246,10 @@ const validateEmail = (email) => {
 const loginAdmin = async (req, res) => {
   const { email, password } = req.body;
 
-  // Validate email format
   if (!validateEmail(email)) {
     return res.status(400).json({ message: "Invalid email format" });
   }
 
-  // Validate password presence
   if (!password) {
     return res.status(400).json({ message: "Password is required" });
   }
@@ -328,19 +329,101 @@ const google = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  // console.log(req.body)
 };
 
 const getUserProfile = async (req, res) => {
   const user_id = req.params.user_id;
 
   try {
-    const userBookings = await User.UserProfile(user_id); // افترض أن `db` هو كائن الاتصال بقاعدة البيانات
-
+    const userBookings = await User.UserProfile(user_id);
     return res.status(200).json(userBookings.rows);
   } catch (error) {
     console.error(error);
     return res.status(500).json("Internal Server Error");
+  }
+};
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "haddadissa44@gmail.com",
+    pass: "muzp ydej rtsj arxx",
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
+
+
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+const generatedVerificationCode = generateVerificationCode();
+
+const sendVerificationEmail = async (email, verificationCode) => {
+  const mailOptions = {
+    from: "haddadissa44@gmail.com",
+    to: email,
+    subject: "Email Verification Code",
+    text: `Your email verification code is: ${verificationCode}`,
+  };
+  console.log("Sending verification email to " + email);
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send email verification");
+  }
+};
+
+const sendEmail = async (req, res) => {
+  let emailFromSendEmail;
+
+  const {email} = req.body;
+
+  try {
+    console.log("issa", email);
+    emailFromSendEmail = email;
+
+    const checkEmailQuery = {
+      text: "SELECT user_id , password FROM users WHERE email = $1",
+      values: [email],
+    };
+
+    const emailCheck = await db.query(checkEmailQuery);
+
+    if (emailCheck.rows.length > 0) {
+      console.log("object");
+      await sendVerificationEmail(email, generatedVerificationCode);
+      console.log("ccccccccc", email);
+      res.json("Verification code email has been sent.");
+      console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    } else {
+      res.status(400).json({ error: "Email not found in the database." });
+    }
+  } catch (error) {
+    console.error("Error sending verification email:", error);
+    res.json({
+      error: "An error occurred while sending the verification email.",
+    });
+  }
+};
+
+const verificationCode = async (req, res) => {
+  const verificationCode = req.body.verificationCode.join('');
+  console.log(verificationCode)
+
+  if (verificationCode === generatedVerificationCode) {
+    res.json({
+      message: "You can go to reset password",
+    });
+  } else {
+    res.status(400).json({
+      message: "Invalid verification code",
+    });
   }
 };
 
@@ -358,5 +441,9 @@ module.exports = {
   loginAdmin,
   updatePassword,
   validateEmail,
-  getAllUsers
+  getAllUsers,
+  updatedImage,
+  sendEmail,
+  verificationCode,
+  updatePasswordmailer
 };

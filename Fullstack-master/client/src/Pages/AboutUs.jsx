@@ -32,7 +32,6 @@ function AboutUs() {
           </div>
         </div>
       </section>
-      <Testemonials />
       < Footer />
     </>
   );

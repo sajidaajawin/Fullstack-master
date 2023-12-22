@@ -136,6 +136,18 @@ function getEmailAdmin(email) {
   return db.query(queryText, value);
 }
 
+const updatePasswordd = async (email, hashedPassword) => {
+  const queryText = `
+    UPDATE users 
+    SET 
+      password = $2
+    WHERE 
+      email = $1 
+    RETURNING *`;
+
+  const values = [email, hashedPassword];
+  return db.query(queryText, values);
+};
 const updatePassword = async (user_id, hashedPassword) => {
   const queryText = `
     UPDATE users 
@@ -175,4 +187,6 @@ module.exports = {
   updatePassword,
   getUserById,
   getTotalCounts,
+  updatePasswordd
+  
 };

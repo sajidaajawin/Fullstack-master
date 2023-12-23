@@ -51,7 +51,7 @@ const PaymentForm = () => {
     setState(event.target.value);
   };
 
-  const [totalPrice, setTotalPrice] = useState(0.5);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -64,7 +64,7 @@ const PaymentForm = () => {
     if (!stripe || !elements) {
       return;
     }
-    const totalPrice = cartData.reduce((acc, item) => acc + item.price, 0);
+
     //const product_name = cartData.map((title) => title.product_name);
 
     // console.log("object", product_name);
@@ -134,7 +134,19 @@ const PaymentForm = () => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    // حساب إجمالي الأسعار
+    const calculatedTotalPrice = cartData.reduce(
+      (acc, item) => acc + item.price,
+      0
+    );
+    setTotalPrice(calculatedTotalPrice);
+  }, [cartData]);
+  useEffect(() => {
+    if (appliedCoupon !== null) {
+      applyCoupon();
+    }
+  }, [appliedCoupon]);
   const applyCoupon = async () => {
     try {
       const response = await axios.post("http://localhost:8000/applyCoupons", {
@@ -142,10 +154,12 @@ const PaymentForm = () => {
         discount_percentage: appliedCoupon,
         cart: cartData,
       });
-      showAlert("Coupon successful!", "success");
-      setAppliedCoupon(response.data.coupon.rows[0].discount_percentage);
       setdiscountedTotal(response.data.discountedTotal);
+
+      setAppliedCoupon(response.data.coupon.rows[0].discount_percentage);
       console.log("😒😒😒", response.data.discountedTotal);
+      showAlert("Coupon successful!", "success");
+
       setCouponError(null);
 
       // Update total price or apply the logic as needed
@@ -285,6 +299,7 @@ const PaymentForm = () => {
                     {item.product_id}
                   </li>
                 ))}
+      <p>Total Price: ${totalPrice}</p>
               </ul>
               <label
                 htmlFor="card-details"

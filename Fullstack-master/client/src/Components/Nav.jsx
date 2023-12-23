@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/free-solid-svg-icons"; // Import the chat icon
-
+import Logoo from "../assests/Logoo.png"
 const Nav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -29,7 +29,7 @@ const Nav = () => {
               <div className="hidden lg:flex lg:items-center lg:space-x-10">
                 <Link to="/" title="" className="text-base font-medium text-white">
                   {" "}
-                  Home{" "}
+                  Home
                 </Link>
 
                 <Link
@@ -43,23 +43,24 @@ const Nav = () => {
 
                 <Link to="/Aboutus" title="" className="text-base font-medium text-white">
                   {" "}
-                  About Us
+                  AboutUs
                 </Link>
 
                 <Link to="/Contactus" title="" className="text-base font-medium text-white">
                   {" "}
-                  Contact Us
+                  ContactUs
                 </Link>
               </div>
 
-              <div className="lg:absolute lg:-translate-x-1/2 lg:inset-y-5 lg:left-1/2">
-                <div className="flex flex-col justify-center items-center text-white">
-                  <Link to="/" title="" className="flex">
-                    <img className="w-auto h-8 lg:h-10" src="" alt="" />
-                  </Link>
-                  <div>Richesses de la Riviera</div>
-                </div>
-              </div>
+              <div className="hidden lg:flex lg:items-center lg:justify-center lg:h-24 lg:w-full">
+  <Link to="/" title="" className="flex items-center text-white">
+    <div className="mx-auto mt-4"> {/* Adjusted margin-top */}
+      <img className="w-auto h-48 lg:h-60 max-w-full" src={Logoo} alt="Logo" />
+    </div>
+    {/* <div>Richesses de la Riviera</div> */}
+  </Link>
+</div>
+
 
               <button
                 type="button"
@@ -135,7 +136,7 @@ const Nav = () => {
                       className="text-base font-medium text-white"
                     >
                       {" "}
-                      Sign up
+                      Signup
                     </Link>
 
                     <Link
@@ -144,7 +145,7 @@ const Nav = () => {
                       className="text-base font-medium text-white"
                     >
                       {" "}
-                      Sign in
+                      Signin
                     </Link>
                   </div>
                 )}

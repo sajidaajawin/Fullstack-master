@@ -21,7 +21,7 @@ import Chat from "./Components/Chat";
 import Reset from "./Components/Rest";
 import Otp from "./Components/Otp";
 import NewPassword from "./Components/NewPassword";
-
+ 
 const App = () => {
   return (
     <Router>

@@ -17,7 +17,7 @@ const Counter = () => {
     <div className="sm:order-1">
       <div className="mx-auto flex h-8 items-stretch text-grey-400">
         <button
-          className="flex items-center justify-center rounded-l-md bg-[#17403C]  px-4 transition hover:bg-[#C3CAC3]  hover:text-white"
+          className="flex items-center justify-center rounded-l-md bg-[#C08261]   px-4 transition  hover:text-white"
           onClick={decreaseCount}
         >
           -
@@ -26,7 +26,7 @@ const Counter = () => {
           {count}
         </div>
         <button
-          className="flex items-center justify-center rounded-r-md bg-[#17403C]  px-4 transition hover:bg-[#C3CAC3]   hover:text-white"
+          className="flex items-center justify-center rounded-r-md bg-[#C08261]   px-4 transition   hover:text-white"
           onClick={increaseCount}
         >
           +

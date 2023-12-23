@@ -11,7 +11,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             className={`px-3 py-2 text-lg font-medium ${
               currentPage === i ? "text-white bg-[#C08261]" : "hover:text-[#E2C799]"
             }`}
-            onClick={() => onPageChange(i)}
+            onClick={(e) => {
+              e.preventDefault();
+              onPageChange(i);
+            }}
           >
             {i}
           </a>
@@ -29,7 +32,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             <a
               href="#"
               className="px-3 py-2 text-lg font-medium hover:text-[#E2C799]"
-              onClick={() => onPageChange(currentPage - 1)}
+              onClick={(e) => {
+                e.preventDefault();
+                onPageChange(currentPage - 1);
+              }}
             >
               &laquo; Prev
             </a>
@@ -41,7 +47,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             <a
               href="#"
               className="px-3 py-2 text-lg font-medium hover:text-[#E2C799]"
-              onClick={() => onPageChange(currentPage + 1)}
+              onClick={(e) => {
+                e.preventDefault();
+                onPageChange(currentPage + 1);
+              }}
             >
               Next &raquo;
             </a>

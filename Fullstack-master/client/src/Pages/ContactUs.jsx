@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Footer from "../Components/Footer";
 import Nav from "../Components/Nav";
 import swal from "sweetalert";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 function ContactUs() {
   const [formData, setFormData] = useState({
@@ -10,6 +12,10 @@ function ContactUs() {
     contact_email: "",
     contact_message: "",
   });
+
+  useEffect(() => {
+    AOS.init();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,11 +36,6 @@ function ContactUs() {
         "http://localhost:8000/contact-uss",
         formData
       );
-      // setFormData({
-      //   contact_name: "",
-      //   contact_email: "",
-      //   contact_message: "",
-      // });
       showAlert("Send successful!", "success");
       console.log("Form data sent successfully:", response.data);
     } catch (error) {
@@ -43,7 +44,6 @@ function ContactUs() {
   };
 
   const showAlert = (message, icon) => {
-    // alert(message, icon);
     swal({
       title: icon === "success" ? "Send" : "Error",
       text: message,
@@ -56,7 +56,10 @@ function ContactUs() {
     <>
       <Nav />
       <div>
-      <section className="text-[#C08261] body-font relative bg-white p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12">
+        <section
+          className="text-[#C08261] body-font relative bg-white p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12"
+          data-aos="fade-up"
+        >
           <div className="container gap-0 px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap bg-white">
             <div className="relative flex items-end justify-start p-10 mx-20 overflow-hidden bg-gray-300 rounded-lg lg:w-1/2 md:w-1/2 sm:mr-2">
               <iframe
@@ -82,8 +85,6 @@ function ContactUs() {
                   </h2>
                   <a className="leading-relaxed text-[#C08261]">
                     sajidaajawin222@gmail.com
-                    {/* href={formData.contact_message} */}
-
                   </a>
                   <h2 className="mt-4 text-xs font-semibold tracking-widest text-gray-900 title-font">
                     PHONE
@@ -93,7 +94,11 @@ function ContactUs() {
               </div>
             </div>
 
-            <div className="flex flex-col w-full p-5 mx-20 mt-8 bg-white lg:w-2/3 md:w-1/2 md:ml-auto md:py-8 md:mt-0">
+            <div
+              className="flex flex-col w-full p-5 mx-20 mt-8 bg-white lg:w-2/3 md:w-1/2 md:ml-auto md:py-8 md:mt-0"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
               <h2 className="mb-1 text-lg font-medium text-[#C08261] title-font">
                 Contact us
               </h2>

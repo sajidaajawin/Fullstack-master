@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 function Otp() {
-  const [otp, setOtp] = useState(['','','','','','']); 
+  const [otp1, setOtp1] = useState('');
+  const [otp2, setOtp2] = useState('');
+  const [otp3, setOtp3] = useState('');
+  const [otp4, setOtp4] = useState('');
+  const [otp5, setOtp5] = useState('');
+  const [otp6, setOtp6] = useState('');
+  
   const [error, setError] = useState('');
 
   const handleVerification = async (e) => {
     e.preventDefault();
 
+    const fullOtp = `${otp1}${otp2}${otp3}${otp4}${otp5}${otp6}`;
+
     try {
-      const response = await axios.post('http://localhost:8000/verificationCode', { verificationCode:otp });
+      const response = await axios.post('http://localhost:8000/verificationCode', { verificationCode: fullOtp });
       console.log(response.data)
       if (response.data) {
         window.location.href = '/newpassword';
@@ -23,30 +30,6 @@ function Otp() {
     }
   };
 
-  // const handleResend = async () => {
-  //   try {
-  //     const newOtp = generateNewOtp();
-  //     await sendOtpToEmail(newOtp);
-  //     setOtp(newOtp);
-  //     setError('');
-  //   } catch (error) {
-  //     console.error('Error resending OTP:', error);
-  //     setError('An error occurred while resending OTP.');
-  //   }
-  // };
-
-  // const generateNewOtp = () => {
-  //   return Array.from({ length: 4 }, () => Math.floor(Math.random() * 10).toString());
-  // };
-
-  // const sendOtpToEmail = async (verificationCode) => {
-  //   try {
-  //     await axios.post('http://localhost:8000/verificationCode', { verificationCode });
-  //   } catch (error) {
-  //     throw new Error('Error sending OTP to email:', error);
-  //   }
-  // };
-
   return (
     <>
       <div className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-[#C08261] py-12">
@@ -56,49 +39,58 @@ function Otp() {
               <div className="font-semibold text-3xl text-[#C08261]">
                 <p>Email Verification</p>
               </div>
-              <div className="flex flex-row text-sm font-medium text-gray-400">
-                <p>We have sent a code to your email ba**@dipainhouse.com</p>
-              </div>
             </div>
-
+  
             <div>
               <form>
-                <div className="flex flex-col space-y-16">
-                  <div className="flex flex-row items-center justify-between mx-auto w-full max-w-xs">
-                    {otp.map((digit, index) => (
-                      <input
-                        key={index}
-                        className="w-16 h-16 text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-[#C08261]"
-                        type="text"
-                        value={digit}
-                        onChange={(e) => {
-                          const updatedOtp = [...otp];
-                          updatedOtp[index] = e.target.value;
-                          setOtp(updatedOtp);
-                        }}
-                      />
-                    ))}
+                <div className="flex flex-col  space-y-8">
+                  <div className="flex flex-row  items-center justify-between mx-auto w-full max-w-xs">
+                    <input
+                      className="w-16 h-16 text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-[#C08261]"
+                      type="text"
+                      value={otp1}
+                      onChange={(e) => setOtp1(e.target.value)}
+                    />
+                    <input
+                      className="w-16 h-16 text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-[#C08261]"
+                      type="text"
+                      value={otp2}
+                      onChange={(e) => setOtp2(e.target.value)}
+                    />
+                    <input
+                      className="w-16 h-16 text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-[#C08261]"
+                      type="text"
+                      value={otp3}
+                      onChange={(e) => setOtp3(e.target.value)}
+                    />
+                    <input
+                      className="w-16 h-16 text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-[#C08261]"
+                      type="text"
+                      value={otp4}
+                      onChange={(e) => setOtp4(e.target.value)}
+                    />
+                    <input
+                      className="w-16 h-16 text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-[#C08261]"
+                      type="text"
+                      value={otp5}
+                      onChange={(e) => setOtp5(e.target.value)}
+                    />
+                    <input
+                      className="w-16 h-16 text-center px-5 outline-none rounded-xl border border-gray-200 text-lg bg-white focus:bg-gray-50 focus:ring-1 ring-[#C08261]"
+                      type="text"
+                      value={otp6}
+                      onChange={(e) => setOtp6(e.target.value)}
+                    />
                   </div>
-
+  
                   <div className="flex flex-col space-y-5">
                     <div>
                       <button
-                      onClick={handleVerification}
+                        onClick={handleVerification}
                         type="submit"
                         className="flex flex-row items-center justify-center text-center w-full border rounded-xl outline-none py-5 bg-[#C08261] border-none text-white text-sm shadow-sm"
                       >
                         Verify Account
-                      </button>
-                    </div>
-
-                    <div className="flex flex-row items-center justify-center text-center text-sm font-medium space-x-1 text-gray-500">
-                      <p>Didn't receive code?</p>
-                      <button
-                        type="button"
-                        // onClick={handleResend}
-                        className="flex flex-row items-center text-[#C08261] cursor-pointer"
-                      >
-                        Resend
                       </button>
                     </div>
                   </div>

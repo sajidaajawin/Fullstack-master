@@ -22,14 +22,13 @@ const getCommentid = async (req, res) => {
 
 const CreateComment = async (req, res) => {
   try {
-    const { user_id, product_id, content, created_at} = req.body;
+    const { user_id, product_id, content, created_at } = req.body;
     // const product_img = req?.file?.path ? req.file.path : "majdi";
     const result = await comment.CreateComment(
       user_id,
       product_id,
       content,
-      created_at,
-     
+      created_at
     );
     console.log(result);
     return res.status(200).json(result.rows);
@@ -40,6 +39,7 @@ const CreateComment = async (req, res) => {
 
 const SoftDelete = async (req, res) => {
   const comment_id = req.params.comment_id;
+  console.log(comment_id);
   try {
     const result = await comment.SoftDelete(comment_id);
     console.log(result);
@@ -72,7 +72,10 @@ const getCommentsByUserAndProduct = async (req, res) => {
   const { userId, productId } = req.params;
 
   try {
-    const comments = await comment.getCommentsByUserAndProduct(userId, productId);
+    const comments = await comment.getCommentsByUserAndProduct(
+      userId,
+      productId
+    );
     res.json(comments.rows);
   } catch (error) {
     console.error("Error in commentController:", error);

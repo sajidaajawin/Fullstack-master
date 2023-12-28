@@ -5,6 +5,21 @@ function getAllContact() {
     "SELECT *, sendertype FROM contacts WHERE is_deleted = false AND sendertype = 'user' "
   );
 }
+const getTotalCount = async () => {
+  const result = await db.query(
+    "SELECT COUNT(*) FROM contacts WHERE is_deleted = false"
+  );
+  return result.rows[0].count;
+};
+// function getContactpagi(limit, offset) {
+//   const query = `
+//     SELECT * FROM contact
+//     WHERE is_deleted = false
+//     LIMIT $1 OFFSET $2
+//   `;
+//   console.log("I am here ",limit,offset)
+//   return db.query(query, [limit, offset]);
+// }
 
 function getContactid(contact_id) {
   const queryText =
@@ -38,7 +53,7 @@ async function deleteContact(contact_id) {
       throw new Error("Product not found or already deleted.");
     }
 
-    return true; // Return true to indicate a successful deletion
+    return true;
   } catch (error) {
     throw error;
   }
@@ -77,17 +92,24 @@ function updateContact(
   return db.query(queryText, values);
 }
 
-// const db = require('../your-db-connection-file'); // Adjust this to your database connection file
-
 function getAllUserMessages() {
-  return db.query(
-    "SELECT *, sendertype FROM contacts WHERE is_deleted = false AND sendertype = 'admin'"
-  );
+  const queryText =
+    "SELECT *, sendertype FROM contacts WHERE  is_deleted = false AND sendertype = 'admin' ";
+
+  return db.query(queryText);
 }
-function getAllAdminMessages() {
-  return db.query(
-    "SELECT *, sendertype FROM contacts WHERE is_deleted = false AND sendertype = 'user'"
-  );
+function getAllAdminMessages(user_id) {
+  const queryText =
+    "SELECT *, sendertype FROM contacts WHERE user_id = $1 AND is_deleted = false AND sendertype = 'user'";
+  const values = [user_id];
+  return db.query(queryText, values);
+}
+
+function getAllAdminMessagess(limit, offset) {
+  const queryText =
+    "SELECT *, sendertype FROM contacts WHERE  is_deleted = false AND sendertype = 'user'  LIMIT $1 OFFSET $2";
+
+  return db.query(queryText, [limit, offset]);
 }
 
 function addMessage(
@@ -125,4 +147,6 @@ module.exports = {
   addMessage,
   getAllAdminMessages,
   getAllUserMessages,
+  getAllAdminMessagess,
+  getTotalCount,
 };

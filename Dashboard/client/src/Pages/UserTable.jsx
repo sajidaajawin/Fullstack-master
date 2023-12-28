@@ -5,7 +5,7 @@ import swal from "sweetalert";
 
 function UserTable() {
   const [users, setUsers] = useState(null);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   const [page, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -32,7 +32,8 @@ function UserTable() {
           const limit = response.data.limit;
           console.log("asd", limit);
           setlimit(limit);
-
+          console.log(response.config.url, "asdasasdasdasd");
+          // window.location.href=response.config.urlx
           console.log(totalPages);
         })
         .catch((error) => {
@@ -76,6 +77,7 @@ function UserTable() {
         // Handle the successful response
         if (is_deleted) {
           // alert("User unblocked successfully");
+          handleUndo(user_id);
         } else {
           swal({
             title: "Done!",
@@ -84,6 +86,28 @@ function UserTable() {
             confirmButtonText: "OK",
           });
         }
+        // Update the user list (you may want to refetch it)
+      })
+      .catch((error) => {
+        // Handle errors
+        console.error("Error blocking/unblocking user:", error);
+        alert("Failed to block/unblock the user. Please try again.");
+      });
+  };
+  const handleUndo = (user_id) => {
+    // Send a request to block/unblock the user using Axios.
+    axios
+      .put(`http://localhost:8000/undo/${user_id}`)
+      .then((response) => {
+        console.log(response.data);
+        // Handle the successful response
+
+        swal({
+          title: "Done!",
+          text: "User UnBlocked Successfully",
+          icon: "success", // Fix the typo here
+          confirmButtonText: "OK",
+        });
         // Update the user list (you may want to refetch it)
       })
       .catch((error) => {
@@ -101,6 +125,7 @@ function UserTable() {
   return (
     <>
       <Statics />
+      <h2 className="text-3xl font-bold pt-[3rem] text-center mb-4">Users</h2>
 
       <div className="overflow-hidden rounded-lg border border-[#C08261] shadow-md m-5  mt-30">
         <div className="flex items-center rounded-none border-none    space-x-2">
@@ -121,7 +146,7 @@ function UserTable() {
         </div>
         <br />
         <div className="table-container" style={tableStyles}>
-          <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
+          <table className="  w-full border-collapse bg-white text-left text-sm text-gray-500">
             <thead className="bg-[#C08261]">
               <tr>
                 <th scope="col" className="px-6 py-4 font-medium text-gray-900">

@@ -9,6 +9,10 @@ router.post("/NewContact", ContactController.NewContact);
 router.get("/gitAllContact", ContactController.getAllContact);
 router.get("/getContactid/:contact_id", ContactController.getContactid);
 router.get("/getContactuser_id/:user_id", ContactController.getCommentUser_di);
+router.get(
+  "/getContactMessageByuserr/:page/:limit",
+  ContactController.getadminContactpagi
+);
 
 router.put("/deleteContact/:contact_id", ContactController.deleteContact);
 router.put("/updateContact/:contact_id", ContactController.updateContact);
@@ -28,5 +32,10 @@ router.get(
   authentication.authenticateToken,
   ContactController.getAdminMessages
 );
+// router.get(
+//   "/getContactMessageByuserr",
+//   authentication.authenticateToken,
+//   ContactController.getAdminMessagess
+// );
 
 module.exports = router;

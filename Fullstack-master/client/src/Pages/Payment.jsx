@@ -94,7 +94,7 @@ const PaymentForm = () => {
 
       if (appliedCoupon) {
         // Calculate the discounted total based on coupon
-        paymentAmount = discountedTotal;
+        paymentAmount =  discountedTotal;
       } else {
         // Use the original total price
         paymentAmount = totalPrice;
@@ -135,9 +135,8 @@ const PaymentForm = () => {
     }
   };
   useEffect(() => {
-    // حساب إجمالي الأسعار
     const calculatedTotalPrice = cartData.reduce(
-      (acc, item) => acc + item.price,
+      (acc, item) => acc + item.price * item.quantity,
       0
     );
     setTotalPrice(calculatedTotalPrice);
@@ -157,18 +156,12 @@ const PaymentForm = () => {
       setdiscountedTotal(response.data.discountedTotal);
 
       setAppliedCoupon(response.data.coupon.rows[0].discount_percentage);
-      console.log("😒😒😒", response.data.discountedTotal);
+      console.log("😒😒😒", response.data);
       showAlert("Coupon successful!", "success");
 
       setCouponError(null);
-
-      // Update total price or apply the logic as needed
-      // You might want to store the discounted total in state
-      // and use it in your payment request.
-      // setTotalPrice(response.data.discountedTotal);
     } catch (error) {
       setAppliedCoupon(null);
-      // setCouponError(error.response.data.error);
       showAlert("Coupon Not Found", "error");
     } finally {
       setLoading(false);
@@ -189,17 +182,14 @@ const PaymentForm = () => {
       {true ? (
         <>
           <Nav />
-          <Card className="my-10 w-8/12 mx-auto bg-gray-50 px-4 pt-8 lg:mt-5">
+          <Card className="my-10 w-10/12 mx-auto bg-gray-50 px-4 pt-8 lg:mt-5">
+
             <p className="text-xl font-medium">Payment Details</p>
             <p className="text-gray-400">
               Complete your order by providing your payment details.
             </p>
             <form onSubmit={handlePay} className="">
-              {/* Email input */}
-              <label
-                htmlFor="email"
-                className="mt-4 mb-2 block text-xl font-medium"
-              >
+              <label htmlFor="email" className="mt-4 mb-2 block text-xl font-medium">
                 Email
               </label>
               <div className="relative">
@@ -213,30 +203,23 @@ const PaymentForm = () => {
                   onChange={(e) => setUserEmail(e.target.value)}
                   required
                 />
-                {/* ... */}
               </div>
-              <div>
-                {/* Phone input */}
-                <label
-                  htmlFor="phone"
-                  className="mt-4 mb-2 block text-sm font-medium"
-                >
+  
+              <div className="relative">
+                <label htmlFor="phone" className="mt-4 mb-2 block text-sm font-medium">
                   Phone Number
                 </label>
-                <div className="relative">
-                  <input
-                    id="phone"
-                    name="phone"
-                    value={userPhone}
-                    onChange={(e) => setUserPhone(e.target.value)}
-                    placeholder="Enter phone number"
-                    className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-                    required
-                  />
-                  {/* ... */}
-                </div>
+                <input
+                  id="phone"
+                  name="phone"
+                  value={userPhone}
+                  onChange={(e) => setUserPhone(e.target.value)}
+                  placeholder="Enter phone number"
+                  className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                  required
+                />
               </div>
-
+  
               <div className="space-y-4">
                 <label htmlFor="country" className="block font-medium">
                   Country:
@@ -258,7 +241,6 @@ const PaymentForm = () => {
                   value={state}
                   onChange={handleStateChange}
                 />
-
                 <label htmlFor="address" className="block font-medium">
                   Address Line:
                 </label>
@@ -270,12 +252,8 @@ const PaymentForm = () => {
                   onChange={handleAddressChange}
                 />
               </div>
-
-              {/* Card Holder input */}
-              <label
-                htmlFor="card-holder"
-                className="mt-4 mb-2 block text-sm font-medium"
-              >
+  
+              <label htmlFor="card-holder" className="mt-4 mb-2 block text-sm font-medium">
                 Card Holder
               </label>
               <div className="relative">
@@ -289,22 +267,42 @@ const PaymentForm = () => {
                   onChange={(e) => setCardholder(e.target.value)}
                   required
                 />
-                {/* ... */}
               </div>
-              {/* ... */}
+  
+              <div className="mt-4">
+                <label htmlFor="coupon" className="block text-sm font-medium">
+                  Coupon Code
+                </label>
+                <div className="flex">
+                  <input
+                    type="text"
+                    id="coupon"
+                    name="coupon"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  <button
+                    onClick={applyCoupon}
+                    className="ml-2 px-4 py-2 bg-[#C08261] rounded-md text-white"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+  
               <ul>
                 {cartData.map((item) => (
                   <li key={item.id}>
-                    {item.product_name}- Price: {item.price}-product:
+                    {item.product_name}- Price: {item.price * item.quantity}
+                    -product:
                     {item.product_id}
                   </li>
                 ))}
-      <p>Total Price: ${totalPrice}</p>
+                <p>Total Price: ${totalPrice}</p>
               </ul>
-              <label
-                htmlFor="card-details"
-                className="mt-4 mb-2 block text-sm font-medium"
-              >
+  
+              <label htmlFor="card-details" className="mt-4 mb-2 block text-sm font-medium">
                 Card Details
               </label>
               <div className="mb-4">
@@ -325,12 +323,12 @@ const PaymentForm = () => {
                   }}
                 />
               </div>
-
+  
               {loading ? (
                 <button
                   disabled=""
                   type="button"
-                  className="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
+                  className="mt-4 mb-8 w-full rounded-md bg-[#E2C799] px-6 py-3 font-medium text-white"
                 >
                   <svg
                     aria-hidden="true"
@@ -354,7 +352,7 @@ const PaymentForm = () => {
               ) : (
                 <button
                   type="submit"
-                  className="mt-4 mb-8 w-full rounded-md bg-[#C08261] px-6 py-3 font-medium text-white"
+                  className="mt-4 mb-8 w-full rounded-md bg-[#C08261] px-6 py-3 font-medium text-white "
                 >
                   Place Order
                 </button>
@@ -367,33 +365,10 @@ const PaymentForm = () => {
           <p className="text-center">No Products in your Cart</p>
         </Card>
       )}
-
-      {/* Coupon input and apply button */}
-      <div className="mt-4">
-        <label htmlFor="coupon" className="block text-sm font-medium">
-          Coupon Code
-        </label>
-        <div className="flex">
-          <input
-            type="text"
-            id="coupon"
-            name="coupon"
-            value={couponCode}
-            onChange={(e) => setCouponCode(e.target.value)}
-            className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
-          />
-          <button
-            onClick={applyCoupon}
-            className="ml-2 px-4 py-2 bg-gray-800 text-white"
-          >
-            Apply
-          </button>
-        </div>
-      </div>
     </>
   );
-};
-
+      }
+  
 const Payment = () => {
   return (
     <>

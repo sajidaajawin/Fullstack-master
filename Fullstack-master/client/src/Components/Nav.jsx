@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComments } from "@fortawesome/free-solid-svg-icons"; // Import the chat icon
-import Logoo from "../assests/Logoo.png"
+import Logoo from "../assests/Logoo.png";
 const Nav = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   function check() {
-    if (window.localStorage.getItem('token')) {
+    if (window.localStorage.getItem("token")) {
       return true;
     } else {
       return false;
@@ -21,13 +21,16 @@ const Nav = () => {
   return (
     <div>
       <header>
-        
         {/* lg+ */}
         <div className="bg-[#C08261]">
           <div className="px-4 mx-auto sm:px-6 lg:px-8">
             <nav className="relative flex items-center justify-between h-16 lg:h-24">
               <div className="hidden lg:flex lg:items-center lg:space-x-10">
-                <Link to="/" title="" className="text-base font-medium text-white">
+                <Link
+                  to="/"
+                  title=""
+                  className="text-base font-medium text-white"
+                >
                   {" "}
                   Home
                 </Link>
@@ -41,32 +44,54 @@ const Nav = () => {
                   Products
                 </Link>
 
-                <Link to="/Aboutus" title="" className="text-base font-medium text-white">
+                <Link
+                  to="/Aboutus"
+                  title=""
+                  className="text-base font-medium text-white"
+                >
                   {" "}
                   AboutUs
                 </Link>
 
-                <Link to="/Contactus" title="" className="text-base font-medium text-white">
+                <Link
+                  to="/Contactus"
+                  title=""
+                  className="text-base font-medium text-white"
+                >
                   {" "}
                   ContactUs
+                </Link>
+
+                <Link
+                  to="/Faq"
+                  title=""
+                  className="text-base font-medium text-white"
+                >
+                  {" "}
+                  FAQ
                 </Link>
               </div>
 
               <div className="hidden lg:flex lg:items-center lg:justify-center lg:h-24 lg:w-full">
-  <Link to="/" title="" className="flex items-center text-white">
-    <div className="mx-auto mt-4"> {/* Adjusted margin-top */}
-      <img className="w-auto h-48 lg:h-60 max-w-full" src={Logoo} alt="Logo" />
-    </div>
-    {/* <div>Richesses de la Riviera</div> */}
-  </Link>
-</div>
-
+                <Link to="/" title="" className="flex items-center text-white">
+                  <div className="mx-auto mt-4">
+                    {" "}
+                    {/* Adjusted margin-top */}
+                    <img
+                      className="w-auto h-48 lg:h-60 max-w-full"
+                      src={Logoo}
+                      alt="Logo"
+                    />
+                  </div>
+                  {/* <div>Richesses de la Riviera</div> */}
+                </Link>
+              </div>
 
               <button
                 type="button"
                 className="flex items-center justify-center ml-auto text-white w-9 h-9 lg:hidden"
               >
-                <svg
+                {/* <svg
                   className="w-5 h-5"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -79,13 +104,13 @@ const Nav = () => {
                     strokeWidth="2"
                     d="M6 18L18 6M6 6l12 12M6 18L18 6"
                   />
-                </svg>
+                </svg> */}
               </button>
 
               <button
                 type="button"
                 onClick={toggleMenu}
-                className="inline-flex p-2 ml-5 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100"
+                className="inline-flex p-2 ml-5 text-white transition-all duration-200 rounded-md lg:hidden"
               >
                 <svg
                   className="w-6 h-6"
@@ -171,7 +196,6 @@ const Nav = () => {
                     </svg>
                   </Link>{" "}
                 </div>{" "}
-                
                 {/* Chat Icon */}
                 {check() && (
                   <div className="hidden lg:flex justify-end lg:items-center lg:space-x-10">
@@ -180,10 +204,7 @@ const Nav = () => {
                       title=""
                       className="flex items-center justify-center w-10 h-10 text-white"
                     >
-                      <FontAwesomeIcon
-                        icon={faComments}
-                        className="w-6 h-6"
-                      />
+                      <FontAwesomeIcon icon={faComments} className="w-6 h-6" />
                     </Link>
                   </div>
                 )}
@@ -228,63 +249,63 @@ const Nav = () => {
 
             <div className={`mt-6 ${isMenuOpen ? "block" : "hidden"}`}>
               <div className="flex flex-col space-y-2">
-                <a
-                  href="#"
+                <Link
+                  to="/"
                   title=""
                   className="py-2 text-base font-medium text-black transition-all duration-200 focus:text-blue-600"
                 >
                   {" "}
-                  Features
-                </a>
+            Home
+                </Link>
 
-                <a
-                  href="#"
+                <Link
+                  to="/allproducts"
                   title=""
                   className="py-2 text-base font-medium text-black transition-all duration-200 focus:text-blue-600"
                 >
                   {" "}
-                  Solutions
-                </a>
+           Products
+            </Link>
 
-                <a
-                  href="#"
+                <Link
+                  to="/aboutus"
                   title=""
                   className="py-2 text-base font-medium text-black transition-all duration-200 focus:text-blue-600"
                 >
                   {" "}
-                  Resources
-                </a>
+             Aboutus
+                </Link>
 
-                <a
-                  href="#"
+                <Link
+                  to="/contactus"
                   title=""
                   className="py-2 text-base font-medium text-black transition-all duration-200 focus:text-blue-600"
                 >
                   {" "}
-                  Pricing
-                </a>
+                Contactus
+                </Link>
               </div>
 
               <hr className="my-4 border-gray-200" />
 
               <div className="flex flex-col space-y-2">
-                <a
-                  href="#"
+                <Link
+                  to="/register"
                   title=""
                   className="py-2 text-base font-medium text-black transition-all duration-200 focus:text-blue-600"
                 >
                   {" "}
                   Sign up
-                </a>
+                </Link>
 
-                <a
-                  href="#"
+                <Link
+                  to="/login"
                   title=""
                   className="py-2 text-base font-medium text-black transition-all duration-200 focus:text-blue-600"
                 >
                   {" "}
                   Sign in
-                </a>
+             </Link>
               </div>
             </div>
           </div>

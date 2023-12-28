@@ -1,8 +1,8 @@
 // ChatApp.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Footer from "./Footer";
 import Nav from "./Nav";
+import Footer from "./Footer";
 
 const ChatMessage = ({ content, sender }) => {
   const isUser = sender === "user";
@@ -65,7 +65,7 @@ const Chat = () => {
           "http://localhost:8000/getContactMessageadmin"
         );
         setMessages(response.data);
-        console.log("issa", response.data[0]);
+        console.log("issa", response.data);
       } catch (error) {
         console.error("Error getting chat history:", error);
       }
@@ -94,8 +94,8 @@ const Chat = () => {
   // Run the effect only once
 
   return (
-    <>
-   <Nav />
+  <>
+  <Nav />
     <div className="flex flex-col h-screen bg-gray-100">
       <div className="flex-1 overflow-y-auto p-4">
         {/* Display user messages */}
@@ -103,7 +103,7 @@ const Chat = () => {
           messages.map((msg, index) => (
             <ChatMessage
               key={index}
-              content={msg.contact_name}
+              content={msg.contact_message}
               sender={msg.sendertype}
             />
           ))}
@@ -113,7 +113,7 @@ const Chat = () => {
           messagesuser.map((msg, index) => (
             <ChatMessage
               key={index}
-              content={msg.contact_name}
+              content={msg.contact_message}
               sender={msg.sendertype}
             />
           ))}
@@ -143,9 +143,12 @@ const Chat = () => {
 
 export default function ChatApp() {
   return (
+    <>
     <div className="App">
       <Chat />
-      <Footer />
     </div>
+    <Footer />
+    </>
+  
   );
 }

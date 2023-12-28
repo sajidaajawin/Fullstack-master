@@ -9,9 +9,10 @@ function getAllUsers() {
 
 function getAllData(limit, offset) {
   const query = `
-    SELECT * FROM users 
-    WHERE is_deleted = false
-    LIMIT $1 OFFSET $2
+  SELECT * FROM users 
+WHERE is_deleted = false OR is_deleted = true
+LIMIT $1 OFFSET $2;
+
   `;
   console.log("I am here ", limit, offset);
   return db.query(query, [limit, offset]);
@@ -77,6 +78,11 @@ function deleteUser(user_id) {
   const value = [user_id];
   return db.query(queryText, value);
 }
+function Undo(user_id) {
+  const queryText = "UPDATE users SET is_deleted = false WHERE user_id = $1";
+  const value = [user_id];
+  return db.query(queryText, value);
+}
 
 // function updateUser(user_id, username, email, password) {
 //   const queryText =
@@ -89,24 +95,50 @@ function updateUser(
   username,
   email,
 
-  user_img,
   phone_number,
   birthday
 ) {
+  console.log(
+    user_id,
+    username,
+    email,
+
+    phone_number,
+    birthday
+  );
   const queryText = `
     UPDATE users 
     SET 
       username = COALESCE($2, username), 
       email = COALESCE($3, email), 
      
-      user_img = COALESCE($4, user_img),
-      phone_number = COALESCE($5, phone_number),
-      birthday = COALESCE($6, birthday)
+      
+      phone_number = COALESCE($4, phone_number),
+      birthday = COALESCE($5, birthday)
     WHERE 
       user_id = $1 
     RETURNING *`;
 
-  const values = [user_id, username, email, user_img, phone_number, birthday];
+  const values = [user_id, username, email, phone_number, birthday];
+  return db.query(queryText, values);
+}
+function updatedImage(
+  user_id,
+
+  user_img
+) {
+  const queryText = `
+    UPDATE users 
+    SET 
+
+     
+      user_img = COALESCE($2, user_img)
+
+    WHERE 
+      user_id = $1 
+    RETURNING *`;
+
+  const values = [user_id, user_img];
   return db.query(queryText, values);
 }
 
@@ -136,18 +168,6 @@ function getEmailAdmin(email) {
   return db.query(queryText, value);
 }
 
-const updatePasswordd = async (email, hashedPassword) => {
-  const queryText = `
-    UPDATE users 
-    SET 
-      password = $2
-    WHERE 
-      email = $1 
-    RETURNING *`;
-
-  const values = [email, hashedPassword];
-  return db.query(queryText, values);
-};
 const updatePassword = async (user_id, hashedPassword) => {
   const queryText = `
     UPDATE users 
@@ -160,6 +180,19 @@ const updatePassword = async (user_id, hashedPassword) => {
   const values = [user_id, hashedPassword];
   return db.query(queryText, values);
 };
+const updatePasswordd = async (email, hashedPassword) => {
+  const queryText = `
+    UPDATE users 
+    SET 
+      password = $2
+    WHERE 
+      email = $1 
+    RETURNING *`;
+
+  const values = [email, hashedPassword];
+  return db.query(queryText, values);
+};
+
 async function UserProfile(user_id) {
   const queryText =
     "SELECT  workshops.workshop_name as workshop_name, workshops.workshop_dis as workshop_dis, workshops.workshop_title as workshop_title ,workshops.workshop_start as workshop_start,workshops.workshop_end as workshop_end " +
@@ -170,6 +203,33 @@ async function UserProfile(user_id) {
 
   return db.query(queryText, values);
 }
+
+// ...
+
+// async function getUserByEmail(email) {
+//   const queryText = 'SELECT * FROM users WHERE email = $1';
+//   const value = [email];
+
+//   try {
+//     const result = await db.query(queryText, value);
+//     return result.rows[0];
+//   } catch (error) {
+//     console.error("Error getting user by email:", error);
+//     throw error; // Re-throw the error to be caught by the calling function
+//   }
+// }
+
+// async function getUserByResetToken(password) {
+//   try {
+//     const result = await db.query('SELECT * FROM users WHERE password = $1', [password]);
+//     return result.rows[0];
+//   } catch (error) {
+//     console.error("Error getting user by reset token:", error);
+//     throw error; // Re-throw the error to be caught by the calling function
+//   }
+// }
+
+// ...
 
 module.exports = {
   getAllUsers,
@@ -187,6 +247,9 @@ module.exports = {
   updatePassword,
   getUserById,
   getTotalCounts,
-  updatePasswordd
-  
+  updatedImage,
+  // getUserByEmail,
+  // getUserByResetToken
+  updatePasswordd,
+  Undo,
 };

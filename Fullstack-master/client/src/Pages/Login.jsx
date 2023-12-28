@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert";
 import GoolgeSignInButton from "../Components/GoogleSignup";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -26,8 +26,8 @@ const LoginForm = () => {
       errors.email = "Invalid email address";
     }
 
-    if (!formData.password || formData.password.length < 8) {
-      errors.password = "Password must be at least 8 characters long";
+    if (!formData.password || formData.password.length < 6) {
+      errors.password = "Password must be at least 6 characters long";
     }
 
     setErrors(errors);
@@ -116,9 +116,6 @@ const LoginForm = () => {
                 value={formData.email}
                 onChange={handleInputChange}
               />
-              {errors.email && (
-                <p className="text-red-500">{errors.email}</p>
-              )}
             </div>
             <div>
               <input
@@ -131,10 +128,8 @@ const LoginForm = () => {
                 value={formData.password}
                 onChange={handleInputChange}
               />
-              {errors.password && (
-                <p className="text-red-500">{errors.password}</p>
-              )}
             </div>
+
             <div className="!mt-10">
               <button
                 type="button"
@@ -145,12 +140,8 @@ const LoginForm = () => {
               </button>
               <GoolgeSignInButton />
             </div>
-
             <div className="text-center mt-4">
-              <Link
-                to="/rest"
-                className="text-[#C08261] font-medium underline"
-              >
+              <Link to="/rest" className="text-[#C08261] font-medium underline">
                 Forgot Password?
               </Link>
             </div>

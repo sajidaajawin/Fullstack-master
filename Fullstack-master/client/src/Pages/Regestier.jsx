@@ -23,17 +23,25 @@ const RegisterForm = () => {
   const validateForm = () => {
     let errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!formData.email || !emailRegex.test(formData.email)) {
       errors.email = "Invalid email address";
     }
-  
+
     if (!formData.password || formData.password.length < 6) {
       errors.password = "Password must be at least 6 characters long";
+    } else if (!/[A-Z]/.test(formData.password)) {
+      errors.password = "Password must contain at least one uppercase letter";
+    } else if (!/[a-z]/.test(formData.password)) {
+      errors.password = "Password must contain at least one lowercase letter";
+    } else if (!/\d/.test(formData.password)) {
+      errors.password = "Password must contain at least one number";
+    } else if (!/[@$!%*?&]/.test(formData.password)) {
+      errors.password = "Password must contain at least one special character";
     }
-  
-    return Object.keys(errors).length === 0;
+
+    return errors;
   };
-  
 
   const redirectToLogin = () => {
     window.location.href = "/";
@@ -41,13 +49,12 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
+    const errors = validateForm();
+
+    if (Object.keys(errors).length === 0) {
       try {
         const response = await axios.post("http://localhost:8000/register", formData);
         console.log(response.data.message);
-          // const user = response.data.user;
-      // const token = response.data.token;
-      // localStorage.setItem("token", token);
         Swal({
           icon: 'success',
           title: 'Registration Successful!',
@@ -66,9 +73,10 @@ const RegisterForm = () => {
           confirmButtonColor: '#d33',
         });
       }
+    } else {
+      setErrors(errors);
     }
   };
-
     return (
       <div className="font-[sans-serif] bg-[#C08261] text-[#C08261]">
       <div className="min-h-screen flex flex-col items-center justify-center lg:p-6 p-4">

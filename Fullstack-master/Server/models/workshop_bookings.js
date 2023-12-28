@@ -24,6 +24,14 @@ function workshop(workshop_id) {
   const value = [workshop_id];
   return db.query(queryText, value);
 }
+function workshopuserid(user_id) {
+  const queryText = `SELECT workshop_bookings.*,workshops.*
+  FROM workshop_bookings
+  JOIN workshops ON workshop_bookings.workshop_id = workshops.workshop_id
+  WHERE workshop_bookings.user_id = $1 AND workshop_bookings.is_deleted = false`;
+  const value = [user_id];
+  return db.query(queryText, value);
+}
 
 async function deleteworkshop_bookings(id) {
   const queryText =
@@ -82,4 +90,5 @@ module.exports = {
   deleteworkshop_bookings,
   workshop,
   updateworkshop_bookings,
+  workshopuserid,
 };

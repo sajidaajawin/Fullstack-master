@@ -15,36 +15,41 @@ export default function GoolgeSignInButton() {
     onError: (error) => console.log("Login Failed:", error),
   });
 
- useEffect(() => {
-  console.log("userGoogle:", userGoogle);
+  useEffect(() => {
+    console.log("userGoogle:", userGoogle);
 
-  if (userGoogle.access_token) {
-    axios
-      .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`)
-      .then(async (res) => {
-        console.log("Google User Info:", res.data);
+    if (userGoogle.access_token) {
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userGoogle.access_token}`
+        )
+        .then(async (res) => {
+          console.log("Google User Info:", res.data);
 
-        try {
-          const response = await axios.post("http://localhost:8000/google", res.data);
-          console.log("Server response:", response.data);
+          try {
+            const response = await axios.post(
+              "http://localhost:8000/google",
+              res.data
+            );
+            console.log("Server response:", response.data);
 
-          const token = response.data.token;
-          console.log("Token:", token);
+            const token = response.data.token;
+            console.log("Token:", token);
 
-          // Make sure the token is not undefined or null before storing it
-          if (token) {
-            localStorage.setItem("token", token);
-            navigate('/');
+            // Make sure the token is not undefined or null before storing it
+            if (token) {
+              localStorage.setItem("token", token);
+              navigate("/");
+            }
+
+            // Rest of your code...
+          } catch (error) {
+            console.log("Error:", error);
           }
-
-          // Rest of your code...
-        } catch (error) {
-          console.log("Error:", error);
-        }
-      })
-      .catch((err) => console.log("Google User Info Error:", err.message));
-  }
-}, [userGoogle,navigate]);
+        })
+        .catch((err) => console.log("Google User Info Error:", err.message));
+    }
+  }, [userGoogle, navigate]);
 
   return (
     <button

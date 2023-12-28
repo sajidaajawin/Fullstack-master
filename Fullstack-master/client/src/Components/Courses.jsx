@@ -122,9 +122,9 @@ const Courses = () => {
                   {workshop.workshop_title}
                 </h5>
               </a>
-              <p className="mb-3 text-sm text-gray-700 dark:text-gray-400">
-                {workshop.workshop_dis}
-              </p>
+              <p className="mb-3 text-sm text-gray-700 dark:text-gray-400 h-20 overflow-hidden">
+  {workshop.workshop_dis}
+</p>
               <p className="mb-3 text-sm text-gray-700 dark:text-gray-400">
                 {workshop.workshop_end}
               </p>

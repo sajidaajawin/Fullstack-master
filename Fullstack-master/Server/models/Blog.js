@@ -6,8 +6,26 @@ function getAllBlog() {
     FROM Blog
     JOIN users ON Blog.user_id = users.user_id
     WHERE Blog.is_deleted = false AND Blog.approved = false;`
-    
   );
+}
+
+const getTotalCount = async () => {
+  const result = await db.query(
+    "SELECT COUNT(*) FROM Blog WHERE is_deleted = false"
+  );
+  return result.rows[0].count;
+};
+
+function getAllblogsspagi(limit, offset) {
+  const query = `
+  SELECT Blog.*, users.username, users.email
+  FROM Blog
+  JOIN users ON Blog.user_id = users.user_id
+  WHERE Blog.is_deleted = false AND Blog.approved = false
+    LIMIT $1 OFFSET $2
+  `;
+  console.log("I am here ", limit, offset);
+  return db.query(query, [limit, offset]);
 }
 
 function getBlog(blog_id) {
@@ -18,7 +36,7 @@ function getBlog(blog_id) {
 }
 
 function getBlogidUser(user_id) {
-  const queryText = "SELECT * FROM Blog WHERE user_id = $1";
+  const queryText = "SELECT * FROM blog WHERE user_id = $1 AND approved = 'true'";
   const value = [user_id];
   return db.query(queryText, value);
 }
@@ -118,4 +136,6 @@ module.exports = {
   approvedUpdate,
   approved,
   approvedReject,
+  getTotalCount,
+  getAllblogsspagi,
 };

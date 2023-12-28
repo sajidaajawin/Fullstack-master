@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert";
 import AOS from "aos";
 import "aos/dist/aos.css"; // Import the CSS file
+import BlogSlider from "./BlogSlider";
+import "../Css/BlogSlider.Css"
+
 
 const Blogs = () => {
   const [blog, setBlog] = useState([]);
@@ -52,6 +55,7 @@ const Blogs = () => {
       <h1 className="mb-12 text-center font-sans text-3xl font-bold text-[#C08261]">
         Featured Blogs
       </h1>
+      <BlogSlider blogs={blog} />
       <div
         className="flex justify-center mt-4"
         data-aos="fade-up" // Set the AOS animation attribute
@@ -64,10 +68,10 @@ const Blogs = () => {
         >
           <span className="absolute top-0 left-0 w-0 h-0 transition-all duration-200 border-t-2 border-[#C08261] group-hover:w-full ease"></span>
           <span className="absolute bottom-0 right-0 w-0 h-0 transition-all duration-200 border-b-2 border-[#C08261] group-hover:w-full ease"></span>
-          <span className="absolute top-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-[#C08261] group-hover:h-full ease"></span>
-          <span className="absolute bottom-0 left-0 w-full h-0 transition-all duration-300 delay-200 bg-[#C08261] group-hover:h-full ease"></span>
-          <span className="absolute inset-0 w-full h-full duration-300 delay-300 bg-[#C08261] opacity-0 group-hover:opacity-100"></span>
-          <span className="relative transition-colors duration-300 delay-200 group-hover:text-white ease">
+          <span className="absolute top-0 left-0 w-full h-0 transition-all duration-300 bg-[#C08261] group-hover:h-full ease"></span>
+          <span className="absolute bottom-0 left-0 w-full h-0 transition-all duration-300 bg-[#C08261] group-hover:h-full ease"></span>
+          <span className="absolute inset-0 w-full h-full duration-300 bg-[#C08261] opacity-0 group-hover:opacity-100"></span>
+          <span className="relative transition-colors duration-300 group-hover:text-white ease">
             View More
           </span>
         </Link>
@@ -116,9 +120,11 @@ const Blogs = () => {
                   {blogs.title}
                 </h3>
                 <p className="mb-4 text-base font-light">{blogs.content}</p>
-                <span className="inline-block cursor-pointer select-none border border-[#C08261] bg-[#C08261] px-2 py-1 text-center align-middle text-sm font-semibold leading-normal text-white no-underline shadow-sm">
-                  Read More
-                </span>
+                <Link to={`/blogsdetails/${blogs.blog_id}`}>
+                  <span className="inline-block cursor-pointer select-none border border-[#C08261] bg-[#C08261] px-2 py-1 text-center align-middle text-sm font-semibold leading-normal text-white no-underline shadow-sm">
+                    Read More
+                  </span>
+                </Link>
               </div>
             </Link>
           </article>

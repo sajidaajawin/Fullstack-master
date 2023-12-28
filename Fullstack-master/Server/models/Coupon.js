@@ -30,6 +30,23 @@ function getCoupons() {
     throw error;
   }
 }
+
+function getCouponspagi(limit, offset) {
+  const query = `
+    SELECT * FROM coupons 
+    WHERE is_deleted = false
+    LIMIT $1 OFFSET $2
+  `;
+  console.log("I am here ", limit, offset);
+  return db.query(query, [limit, offset]);
+}
+const getTotalCount = async () => {
+  const result = await db.query(
+    "SELECT COUNT(*) FROM coupons WHERE is_deleted = false"
+  );
+  return result.rows[0].count;
+};
+
 function getCouponByid(id) {
   const queryText = "SELECT * FROM coupons WHERE id = $1";
   const result = [id];
@@ -54,7 +71,7 @@ const deleteCoupon = async (id) => {
 };
 const calculateDiscountedTotal = (discount_percentage, cart) => {
   console.log("object", discount_percentage);
-  const originalTotal = cart.reduce((acc, item) => acc + item.price, 0);
+  const originalTotal = cart.reduce((acc, item) => acc + item.price* item.quantity, 0);
   const discountAmount = (originalTotal * discount_percentage) / 100;
   const discountedTotal = originalTotal - discountAmount;
   console.log("ddddd", originalTotal, discountAmount, discountedTotal);
@@ -69,5 +86,7 @@ module.exports = {
   deleteCoupon,
   calculateDiscountedTotal,
   getCouponByid,
-  getCoupons
+  getCoupons,
+  getCouponspagi,
+  getTotalCount,
 };

@@ -11,20 +11,10 @@ function getShopid(workshop_id) {
   return db.query(queryText, value);
 }
 
-function newShop(
-  workshop_name,
-  workshop_dis,
-  workshop_title,
-
-) {
+function newShop(workshop_name, workshop_dis, workshop_title, workshop_img) {
   const queryText =
-    "INSERT INTO workshops (workshop_name, workshop_dis, workshop_title) VALUES ($1, $2, $3) RETURNING *";
-  const values = [
-    workshop_name,
-    workshop_dis,
-    workshop_title,
-  
-  ];
+    "INSERT INTO workshops (workshop_name, workshop_dis, workshop_title ,  workshop_img) VALUES ($1, $2, $3,$4) RETURNING *";
+  const values = [workshop_name, workshop_dis, workshop_title, workshop_img];
   return db.query(queryText, values);
 }
 
@@ -45,7 +35,25 @@ async function deleteShop(workshop_id) {
     throw error;
   }
 }
+function updatedImage(
+  workshop_id,
 
+  workshop_img
+) {
+  const queryText = `
+    UPDATE workshops 
+    SET 
+
+     
+    workshop_img = COALESCE($2, workshop_img)
+
+    WHERE 
+    workshop_id = $1 
+    RETURNING *`;
+
+  const values = [workshop_id, workshop_img];
+  return db.query(queryText, values);
+}
 // function updateShop(
 //   workshop_id,
 //   workshop_name,
@@ -103,11 +111,11 @@ function updateShop(
   return db.query(queryText, values);
 }
 
-
 module.exports = {
   getAllShop,
   getShopid,
   newShop,
   deleteShop,
   updateShop,
+  updatedImage
 };

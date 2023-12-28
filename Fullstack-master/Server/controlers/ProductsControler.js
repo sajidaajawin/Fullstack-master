@@ -8,15 +8,7 @@ const newblog = async (req, res) => {
   console.log(user_id);
   try {
     const { product_name, category_id, price, product_dis } = req.body;
-    // const product_img = req?.file?.path ? req.file.path : "majdi";
-    // console.log(
-    //   product_name,
-    //   category_id,
-    //   price,
-    //   user_id,
-    //   product_img,
-    //   product_dis
-    // );
+  
     const newblog = await products.newblog(
       product_name,
       category_id,
@@ -60,7 +52,7 @@ const getBlogs = async (req, res) => {
 const getpagi = async (req, res) => {
   try {
     const page = req.params.page;
-    const limit = 10;
+    const limit = 5;
     const offset = (page - 1) * limit;
     console.log("I am here", page, limit);
     console.log("🤣🤣🤣🤣🤣", page, limit);
@@ -88,7 +80,7 @@ const getpagi = async (req, res) => {
       total: totalPages,
     };
 
-    res.json({ result, totalPages, pagination });
+    res.json({ result, totalPages, pagination, limit });
   } catch (error) {
     console.error("Error in getpagi:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -172,5 +164,5 @@ module.exports = {
   deleteproduct,
   updateproduct,
   product,
-  getpagi
+  getpagi,
 };

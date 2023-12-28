@@ -10,6 +10,15 @@ router.get(
   authentication.authenticateToken,
   cartController.GetItem
 );
-
+router.put(
+  "/updateCart/:cart_id",
+  
+  cartController.updateCart
+);
+router.put(
+  "/updateCart2/:product_id",
+  
+  cartController.updateCart2
+);
 
 module.exports = router;

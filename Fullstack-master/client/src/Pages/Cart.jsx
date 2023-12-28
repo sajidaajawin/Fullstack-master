@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Components/Footer";
 import Nav from "../Components/Nav";
 import { useOrder } from "../OrderContext/OrderContext";
 import Counter from "../Components/Counter";
 
 const Cart = () => {
+  const navigate = useNavigate();
   const [cartProduct, setCartProduct] = useState([]);
   const [total, setTotal] = useState([]);
   const { cartData, setOrderData } = useOrder();
@@ -18,7 +19,9 @@ const Cart = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        axios.defaults.headers.common["Authorization"] = ` ${localStorage.getItem("token")}`;
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = ` ${localStorage.getItem("token", token)}`;
         const response = await axios.get("http://localhost:8000/getitems");
         setTotal(response.data);
       } catch (error) {
@@ -35,20 +38,38 @@ const Cart = () => {
 
   const handleQuantityChange = (productId, quantityChange) => {
     setCartProduct((prevCart) => {
-      const updatedCart = prevCart.map((item) => {
-        if (item.id === productId) {
-          const newQuantity = Math.max(0, item.quantity + quantityChange);
-          return { ...item, quantity: newQuantity };
-        }
-        return item;
-      });
+      // Check if the product is already in the cart
+      const existingProductIndex = prevCart.findIndex(
+        (item) => item.id === productId
+      );
   
-      return updatedCart;
+      if (existingProductIndex !== -1) {
+        // If the product is already in the cart, update the quantity
+        const updatedCart = [...prevCart];
+        updatedCart[existingProductIndex].quantity += quantityChange;
+  
+        return updatedCart;
+      } else {
+        // If the product is not in the cart, add it
+        const newProduct = {
+          id: productId,
+          quantity: Math.max(0, quantityChange), // Ensure quantity is not negative
+          // ...other product details
+        };
+  
+        return [...prevCart, newProduct];
+      }
     });
   };
-  
+  const clearCart = () => {
+    setCartProduct([]);
+    localStorage.removeItem("cart");
+  };
+
   const handleCheckout = () => {
     setOrderData(total);
+    clearCart();
+    navigate("/payment");
   };
 
   return (
@@ -57,29 +78,45 @@ const Cart = () => {
       <section className="flex items-center bg-stone-200 lg:h-full font-poppins dark:bg-gray-700">
         <div className="justify-center flex-1 px-4 py-6 mx-auto max-w-7xl lg:py-4 md:px-6">
           <div className="p-8 bg-gray-50 dark:bg-gray-800">
-            <h2 className="mb-8 text-4xl font-bold dark:text-gray-400">Your Cart</h2>
-            <div className="flex flex-wrap -mx-4">
-            {total.map((product) => (
-  <div
-    className="flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
-    key={product.product_id}
-  >
-    <img src={product.product_img} alt="" className="w-full h-96 md:h-24 md:w-24 object-cover" />
-    <div className="w-2/3 px-4">
-      <h2 className="mb-2 text-xl font-bold dark:text-gray-400">{product.product_name}</h2>
-      {/* <p className="text-gray-500 dark:text-gray-400 ">{product.product_description}</p> */}
-    </div>
-    <div className="w-auto px-4 md:w-1/6 lg:w-2/12 ">
-      <div className="inline-flex items-center px-4 font-semibold ">
-      <Counter />
-       
-      </div>
-    </div>
-    <div className="w-auto flex justify-end px-4 text-right md:w-1/6 lg:w-2/12 ">
-      <p className="text-lg font-bold dark:text-gray-400">{product.price}</p>
-    </div>
-  </div>
-))}
+            <h2 className="mb-8 text-4xl font-bold dark:text-gray-400">
+              Your Cart
+            </h2>
+            <div className="flex flex-wrap px-5 w-full">
+              {total.map((product) => (
+                <div
+                  className="flex flex-col justify-between w-full space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0"
+                  key={product.product_id}
+                >
+                  <img
+                    src={product.product_img}
+                    alt=""
+                    className="w-full h-96 md:h-24 md:w-24 object-cover"
+                  />
+                  <div className="w-2/3 px-4">
+                    <h2 className="mb-2 text-xl font-bold dark:text-gray-400">
+                      {product.product_name}
+                    </h2>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="w-auto px-4 md:w-1/6 lg:w-2/12 ">
+                      <div className="inline-flex items-center px-4 font-semibold ">
+                        <Counter
+                          cart_id={product.cart_id}
+                          quantity={product.quantity}
+                          onQuantityChange={(quantityChange) =>
+                            handleQuantityChange(product.id, quantityChange)
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="flex px-4 text-right w-1/2">
+                      <p className="text-lg text-end w-full font-bold dark:text-gray-400">
+                        price: {product.price * product.quantity}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
             <div className="mt-6 text-center">
               <Link to="/payment">

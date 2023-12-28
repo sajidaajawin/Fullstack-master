@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import Nav from '../Components/Nav';
-import Footer from '../Components/Footer';
+
 
 function NotFound() {
   useEffect(() => {
@@ -14,7 +13,7 @@ function NotFound() {
 
   return (
     <>
-    <Nav/>
+    
     <section className="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center" data-aos="fade-down">
       <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div className="mx-auto max-w-screen-sm text-center">
@@ -25,7 +24,7 @@ function NotFound() {
         </div>
       </div>
     </section>
-    <Footer />
+
     </>
   );
 }

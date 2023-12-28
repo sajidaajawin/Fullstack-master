@@ -22,6 +22,7 @@ export const removeLocalStorage = (key) => {
 const UserProfile = () => {
   const [user, setUser] = useState({});
   const [formValues, setFormValues] = useState({});
+  console.log("object", formValues);
   const [photoName, setPhotoName] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   console.log("ccccccccccccccccc", formValues);
@@ -46,7 +47,7 @@ const UserProfile = () => {
       axios
         .get("http://localhost:8000/user")
         .then((response) => {
-          console.log("🤣🤣🤣🤣🤣🤣🤣", response);
+          console.log("�鴂�鴂�鴂�鴂�鴂�鴂�鴂�", response);
           setFormValues(response.data[0]);
         })
         .catch((error) => {
@@ -81,27 +82,74 @@ const UserProfile = () => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   };
 
+  // const handleSaveChanges = async (e) => {
+  //   e.preventDefault();
+  //   if (!error) {
+  //     const updatedUser = new FormData();
+  //     updatedUser.append("user_id", user.user_id);
+  //     updatedUser.append("username", formValues.username);
+  //     updatedUser.append("email", formValues.email);
+
+  //     updatedUser.append("phone_number", formValues.phone_number); // Include hashed password
+  //     updatedUser.append("birthday", formValues.birthday); // Include hashed password
+
+  //     try {
+  //       axios.defaults.headers.common[
+  //         "Authorization"
+  //       ] = `${localStorage.getItem("token")}`;
+  //       const response = await axios.put(
+  //         `http://localhost:8000/updateuser`,
+  //         updatedUser
+  //       );
+  //       console.log("Server Response:", response.data[0]);
+  //       setSuccessMessage("Profile updated successfully!");
+  //     } catch (error) {
+  //       console.error("Error updating Information", error);
+  //       setSuccessMessage("");
+  //       setError("Error updating information. Please try again.");
+  //     }
+  //   }
+  // };
+
   const handleSaveChanges = async (e) => {
     e.preventDefault();
     if (!error) {
-      // const storedToken = getLocalStorage("token");
-      const updatedUser = new FormData();
-      updatedUser.append("user_id", user.user_id);
-      updatedUser.append("username_user", formValues.username);
-      updatedUser.append("email", formValues.email);
-      // updatedUser.append("password", formValues.password);
-      updatedUser.append("image", image);
-      // Include hashed password
-      updatedUser.append("phone_number", formValues.phone_number); // Include hashed password
-      updatedUser.append("birthday", formValues.birthday); // Include hashed password
+      
+
+      try {
+        // console.log(updatedUser);
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `${localStorage.getItem("token")}`;
+        const response = await axios.put(
+          `http://localhost:8000/updateuser`,
+          formValues,
+         
+        );
+        console.log("Server Response:", response.data[0]);
+        setSuccessMessage("Profile updated successfully!");
+      } catch (error) {
+        console.error("Error updating Information", error);
+        setSuccessMessage("");
+        setError("Error updating information. Please try again.");
+      }
+    }
+  };
+
+  const handleImage = async (e) => {
+    e.preventDefault();
+    if (!error) {
+      const updatedImage = new FormData();
+
+      updatedImage.append("image", image);
 
       try {
         axios.defaults.headers.common[
           "Authorization"
         ] = `${localStorage.getItem("token")}`;
         const response = await axios.put(
-          `http://localhost:8000/updateuser`,
-          updatedUser
+          `http://localhost:8000/updatedImage`,
+          updatedImage
         );
         console.log("Server Response:", response.data[0]);
         setSuccessMessage("Profile updated successfully!");
@@ -157,318 +205,6 @@ const UserProfile = () => {
     }
   };
 
-  // return (
-  //   <div className="min-h-screen bg-white flex justify-center ml-20 items-center">
-  //     <div className="w-9/12 h-5/6 bg-white my-6 md:ml-24 px-10 py-8 rounded-lg shadow-md">
-  //       <form>
-  //         <div className="flex justify-center">
-  //           <div className="col-span-6 ml-2 sm:col-span-4 md:mr-3">
-  //             <input
-  //               type="file"
-  //               className="hidden"
-  //               ref={fileInputRef}
-  //               onChange={handleFileChange}
-  //             />
-  //             <div className="text-center">
-  //               <div className="mt-2">
-  //                 <span
-  //                   className="block w-40 h-40 rounded-full m-auto shadow"
-  //                   style={{
-  //                     backgroundSize: "cover",
-  //                     backgroundRepeat: "no-repeat",
-  //                     backgroundPosition: "center center",
-  //                     backgroundImage: `url('${
-  //                       photoPreview == null
-  //                         ? formValues.user_img
-  //                         : photoPreview
-  //                     }')`,
-  //                   }}
-  //                 />
-  //               </div>
-  //               <button
-  //                 type="button"
-  //                 className="inline-flex items-center px-4 py-2 bg-[#C08261] border-[#C08261] rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-[#E2C799] focus-outline-none focus-border-indigo-400 focus-shadow-outline-indigo active-text-gray-800 active-bg-gray-50 transition ease-in-out duration-150 mt-2 ml-3"
-  //                 onClick={handleSelectPhoto}
-  //               >
-  //                 Select New Photo
-  //               </button>
-  //             </div>
-  //           </div>
-  //         </div>
-
-  //         <div className="mt-8 space-y-6">
-  //           <div className="flex flex-col justify-start">
-  //             <label
-  //               htmlFor="username"
-  //               className="self-start p-2 text-[#C08261]"
-  //             >
-  //               Full Name
-  //             </label>
-  //             <input
-  //               className="w-full mb-3 p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               type="text"
-  //               name="username"
-  //               value={formValues.username}
-  //             />
-  //           </div>
-
-  //           <div className="flex flex-col justify-start">
-  //             <label htmlFor="Email" className="self-start p-2 text-[#C08261]">
-  //               Email
-  //             </label>
-  //             <input
-  //               className="w-full p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               name="email"
-  //               value={formValues.email}
-  //             />
-  //           </div>
-
-  //           <div className="flex flex-col justify-start">
-  //             <label
-  //               htmlFor="password"
-  //               className="self-start p-2 text-[#C08261]"
-  //             >
-  //               Password
-  //             </label>
-  //             <input
-  //               className="w-full p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               value={formValues.password}
-  //               name="password"
-  //             />
-  //           </div>
-  //           <div className="flex flex-col justify-start">
-  //             <label
-  //               htmlFor="phone_number"
-  //               className="self-start p-2 text-[#C08261]"
-  //             >
-  //               phone_number
-  //             </label>
-  //             <input
-  //               className="w-full p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               value={formValues.phone_number}
-  //               name="phone_number"
-  //             />
-  //           </div>
-  //           <div className="flex flex-col justify-start">
-  //             <label
-  //               htmlFor="birthday"
-  //               className="self-start p-2 text-[#C08261]"
-  //             >
-  //               birthday
-  //             </label>
-  //             <input
-  //               className="w-full p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               value={formValues.birthday}
-  //               name="birthday"
-  //             />
-  //           </div>
-  //         </div>
-
-  //         <div className="flex justify-end mt-6">
-  //           <button
-  //             className="w-1/4 mr-3 p-2 bg-red-500 hover:bg-red-600 text-white rounded-xl"
-  //             type="button"
-  //           >
-  //             Cancel
-  //           </button>
-  //           <button
-  //             className="w-auto py-2 px-3 bg-[#C08261] text-white rounded-xl"
-  //             onClick={handleSaveChanges}
-  //           >
-  //             Save Changes
-  //           </button>
-  //         </div>
-
-  //         {successMessage && (
-  //           <p className="text-green-600 mt-2">{successMessage}</p>
-  //         )}
-  //         {error && <p className="text-red-600 mt-2">{error}</p>}
-  //       </form>
-  //     </div>
-  //   </div>
-  // );
-
-  // return (
-  //   <div className="min-h-screen bg-white flex justify-center ml-20 items-center">
-  //     <div className="w-9/12 h-5/6 bg-white my-6 md:ml-24 px-10 py-8 rounded-lg shadow-md">
-  //       <form>
-  //         <div className="flex justify-center">
-  //           <div className="col-span-6 ml-2 sm:col-span-4 md:mr-3">
-  //             <input
-  //               type="file"
-  //               className="hidden"
-  //               ref={fileInputRef}
-  //               onChange={handleFileChange}
-  //             />
-  //             <div className="text-center">
-  //               <div className="mt-2">
-  //                 <span
-  //                   className="block w-40 h-40 rounded-full m-auto shadow"
-  //                   style={{
-  //                     backgroundSize: "cover",
-  //                     backgroundRepeat: "no-repeat",
-  //                     backgroundPosition: "center center",
-  //                     backgroundImage: `url('${
-  //                       photoPreview == null
-  //                         ? formValues.user_img
-  //                         : photoPreview
-  //                     }')`,
-  //                   }}
-  //                 />
-  //               </div>
-  //               <button
-  //                 type="button"
-  //                 className="inline-flex items-center px-4 py-2 bg-[#C08261] border-[#C08261] rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-[#E2C799] focus-outline-none focus-border-indigo-400 focus-shadow-outline-indigo active-text-gray-800 active-bg-gray-50 transition ease-in-out duration-150 mt-2 ml-3"
-  //                 onClick={handleSelectPhoto}
-  //               >
-  //                 Select New Photo
-  //               </button>
-  //             </div>
-  //           </div>
-  //         </div>
-
-  //         <div className="mt-8 space-y-6">
-  //           <div className="flex flex-col justify-start">
-  //             <label
-  //               htmlFor="username"
-  //               className="self-start p-2 text-[#C08261]"
-  //             >
-  //               Full Name
-  //             </label>
-  //             <input
-  //               className="w-full mb-3 p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               type="text"
-  //               name="username"
-  //               value={formValues.username}
-  //             />
-  //           </div>
-
-  //           <div className="flex flex-col justify-start">
-  //             <label htmlFor="Email" className="self-start p-2 text-[#C08261]">
-  //               Email
-  //             </label>
-  //             <input
-  //               className="w-full p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               name="email"
-  //               value={formValues.email}
-  //             />
-  //           </div>
-
-  //           <div className="flex flex-col justify-start">
-  //             {/* <label
-  //               htmlFor="password"
-  //               className="self-start p-2 text-[#C08261]"
-  //             >
-  //               Password
-  //             </label>
-  //             <input
-  //               className="w-full p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               value={formValues.password}
-  //               name="password"
-  //             /> */}
-  //           </div>
-  //           <div className="flex flex-col justify-start">
-  //             <label
-  //               htmlFor="phone_number"
-  //               className="self-start p-2 text-[#C08261]"
-  //             >
-  //               phone_number
-  //             </label>
-  //             <input
-  //               className="w-full p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               value={formValues.phone_number}
-  //               name="phone_number"
-  //             />
-  //           </div>
-  //           <div className="flex flex-col justify-start">
-  //             <label
-  //               htmlFor="birthday"
-  //               className="self-start p-2 text-[#C08261]"
-  //             >
-  //               birthday
-  //             </label>
-  //             <input
-  //               className="w-full p-2 border rounded-md bg-gray-200"
-  //               onChange={handleInputChange}
-  //               value={formValues.birthday}
-  //               name="birthday"
-  //             />
-  //           </div>
-  //         </div>
-
-  //         <div className="flex justify-end mt-6">
-  //           <button
-  //             className="w-1/4 mr-3 p-2 bg-red-500 hover:bg-red-600 text-white rounded-xl"
-  //             type="button"
-  //           >
-  //             Cancel
-  //           </button>
-  //           <button
-  //             className="w-auto py-2 px-3 bg-[#C08261] text-white rounded-xl"
-  //             onClick={handleSaveChanges}
-  //           >
-  //             Save Changes
-  //           </button>
-  //         </div>
-
-  //         {successMessage && (
-  //           <p className="text-green-600 mt-2">{successMessage}</p>
-  //         )}
-  //         {error && <p className="text-red-600 mt-2">{error}</p>}
-  //       </form>
-
-  //       <h2>Change Password</h2>
-  //       <form onSubmit={handleSubmit}>
-  //         {/* Your password change form elements go here */}
-
-  //         <div>
-  //           <label htmlFor="currentPassword">Current Password:</label>
-  //           <input
-  //             type="password"
-  //             name="currentPassword"
-  //             value={currentPassword}
-  //             onChange={handleChange}
-  //             required
-  //           />
-  //         </div>
-  //         <div>
-  //           <label htmlFor="newPassword">New Password:</label>
-  //           <input
-  //             type="password"
-  //             name="newPassword"
-  //             value={newPassword}
-  //             onChange={handleChange}
-  //             required
-  //           />
-  //         </div>
-  //         <div>
-  //           <label htmlFor="confirmPassword">Confirm Password:</label>
-  //           <input
-  //             type="password"
-  //             name="confirmPassword"
-  //             value={confirmPassword}
-  //             onChange={handleChange}
-  //             required
-  //           />
-  //         </div>
-  //         <div>
-  //           <button type="submit">Change Password</button>
-  //         </div>
-  //       </form>
-  //       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-  //       {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-  //     </div>
-  //   </div>
-  // );
   return (
     <div className="min-h-full min-w-full bg-gray-100 flex justify-center  items-center">
       <div className="w-[40rem] min-h-[10rem] bg-white p-8 rounded-md shadow-md">
@@ -482,7 +218,9 @@ const UserProfile = () => {
                   className="w-32 h-32 rounded-full mx-auto mb-2 object-cover"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition duration-300">
-                  <span className="text-white text-sm">Change Photo</span>
+                  <button onClick={handleImage} className="text-white text-sm">
+                    Change Photo
+                  </button>
                 </div>
               </div>
             </label>
@@ -571,7 +309,7 @@ const UserProfile = () => {
             </button>
             <button
               type="submit"
-              onClick={handleSaveChanges}
+              // onClick={handleSaveChanges}
               className="px-4 py-2 bg-[#C08261] text-white rounded-md hover:bg-[#E2C799] focus-outline-none focus-border-indigo-400 focus-shadow-outline-indigo active-text-gray-800 active-bg-gray-50 transition ease-in-out duration-150"
             >
               Save Changes

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-
-const AddProductForm = ({ onSave, onClose }) => {
+import swal from "sweetalert"
+const AddProductForm = ({ onClose }) => {
   const [productData, setProductData] = useState({
     product_name: "",
     product_dis: "",
@@ -12,7 +12,7 @@ const AddProductForm = ({ onSave, onClose }) => {
   const [image, setImage] = useState(null);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setProductData({ ...productData, [name]: value });
   };
 
@@ -20,7 +20,9 @@ const AddProductForm = ({ onSave, onClose }) => {
     const file = e.target.files[0];
     setImage(file);
   };
-  axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('token')}`;
+  axios.defaults.headers.common["Authorization"] = `${localStorage.getItem(
+    "token"
+  )}`;
 
   const handleSave = async () => {
     try {
@@ -39,11 +41,24 @@ const AddProductForm = ({ onSave, onClose }) => {
 
       // If successful, you can redirect the user or perform other actions
       console.log("Product added successfully");
-      onSave(); // Assuming onSave is a callback to handle success
-      onClose()
+      showAlert("Product added successfully!", "success");
+
+      // onSave(); // Assuming onSave is a callback to handle success
+      onClose();
     } catch (error) {
+      showAlert("Product Not Added!", "error");
+
       console.error("Error:", error);
     }
+  };
+  const showAlert = (message, icon) => {
+    // alert(message, icon);
+    swal({
+      title: icon === "success" ? "Success" : "Error",
+      text: message,
+      icon: icon,
+      confirmButtonText: "OK",
+    });
   };
 
   return (
@@ -149,7 +164,7 @@ const AddProductForm = ({ onSave, onClose }) => {
         <div className="mt-4 flex justify-end">
           <button
             className="px-4 py-2 bg-[#C08261] text-white rounded-lg mr-2"
-       onClick={handleSave}
+            onClick={handleSave}
           >
             Save
           </button>

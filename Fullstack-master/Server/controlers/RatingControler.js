@@ -78,10 +78,54 @@ const getRatingByproduct = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+const SoftDeletes = async (req, res) => {
+  const rating_id = req.params.rating_id;
+  console.log("😉😉😉", rating_id);
+  try {
+    const result = await ratingModel.SoftDeletes(rating_id);
+    console.log(result);
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    throw error;
+  }
+};
+const updateS = async (req, res) => {
+  const rating_id = req.params.rating_id;
+  const { user_id, product_id, rating, comment, created_at, is_deleted } =
+    req.body;
+  console.log(
+    rating_id,
+    user_id,
+    product_id,
+    rating,
+    comment,
+    created_at,
+    is_deleted
+  );
+
+  try {
+    const result = await ratingModel.updateS(
+      rating_id,
+      user_id,
+      product_id,
+      rating,
+      comment,
+      created_at,
+      is_deleted
+    );
+    console.log(result);
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = {
   addRating,
   getAllRating,
   getRatingByUserAndProduct,
   getRatingByUser,
   getRatingByproduct,
+  updateS,
+  SoftDeletes,
 };

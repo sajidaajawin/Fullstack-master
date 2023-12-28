@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ProductForm from "./ProductForm";
 import AddProductForm from "./AddProduct";
-import Swal from "sweetalert";
+import Swal from "sweetalert2";
+import Statics from "./Statics";
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -12,8 +14,6 @@ function Products() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [limit, setlimit] = useState(0);
-  console.log("ddddddddd", limit);
-  // const [blogs, setBlogs] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setCurrentPage] = useState(1);
   const tableStyles = {
@@ -94,90 +94,107 @@ function Products() {
       });
   };
 
-  const handleAddProduct = (newProduct) => {
-    axios
-      .post("http://localhost:8000/product", newProduct)
-      .then((response) => {
-        setIsAddProductFormVisible(false);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error adding product:", error);
-      });
-  };
-
   const handleDeleteProduct = (productId) => {
-    axios.defaults.headers.common["Authorization"] = `${localStorage.getItem(
-      "token"
-    )}`;
-
-    axios
-      .put(`http://localhost:8000/deleteproduct/${productId}`)
-      .then((response) => {
-        alert("Product deleted successfully");
-      })
-      .catch((error) => {
-        console.error("Error deleting product:", error);
-        alert("Failed to delete the product. Please try again.");
-      });
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this product!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#C08261",
+      cancelButtonColor: "#B31312",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.put(`http://localhost:8000/deleteproduct/${productId}`);
+          Swal.fire({
+            title: "Deleted!",
+            text: "Product has been deleted successfully.",
+            icon: "success",
+            confirmButtonColor: "#C08261",
+          });
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to delete the product. Please try again.",
+            icon: "error",
+            confirmButtonColor: "#B31312",
+          });
+        }
+      }
+    });
   };
-
+  
   return (
-    <div>
-      <div className="w-full max-w-3xl mx-auto p-4">
-        <label htmlFor="product-search" className="sr-only">
-          Search for products
-        </label>
-        <div className="flex items-center space-x-2 pt-20">
-          <input
-            type="text"
-            id="product-search"
-            className="w-full p-2 text-sm border border-gray-300 rounded-lg"
-            placeholder="Search for products"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button
-            className="px-4 py-2 bg-[#C08261] text-white rounded-lg"
-            onClick={handleSearch}
-          >
-            Search
-          </button>
-          <button
-            className="px-4 py-3 bg-[#C08261] text-sm text-white rounded-lg"
-            onClick={() => setIsAddProductFormVisible(true)}
-          >
-            Add product
-          </button>
+    <>
+      <Statics />
+      <div>
+        <div className=" text-center w-full max-w-3xl mx-auto p-4">
+          <label htmlFor="product-search" className="sr-only">
+            Search for products
+          </label>
+          <div className="flex items-center space-x-2 pt-5">
+            <input
+              type="text"
+              id="product_name"
+              className="w-full p-2 text-sm border border-gray-300 rounded-lg"
+              placeholder="Search for products"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              className="px-4 py-2 bg-[#C08261] text-white rounded-lg"
+              onClick={handleSearch}
+            >
+              Search
+            </button>
+            <button
+  className="px-3 py-1.5 bg-[#C08261] text-white rounded-lg text-sm"
+  onClick={() => setIsAddProductFormVisible(true)}
+>
+  Add product
+</button>
+          </div>
         </div>
-      </div>
-      <div className="overflow-hidden rounded-lg border border-[#C08261] shadow-md m-5 ">
-        {" "}
-        {/* ml-80 */}
-        <div className="table-container" style={tableStyles}>
-          <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-            <thead className="bg-[#C08261]">
-              <tr>
-                <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-                  Name
-                </th>
-                <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-                  Category
-                </th>
-                <th
-                  // scope="col"
-                  className="px-6 py-4  font-medium text-gray-900"
-                >
-                  Description
-                </th>
-                <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 border-t border-gray-100 ">
-              {(searchResults.length > 0 ? searchResults : products || []).map(
-                (product, index) => (
+        <h2 className="text-3xl font-bold pt-[3rem] text-center text-[#C08261] mb-4">Products</h2>
+        <div className="overflow-hidden rounded-lg border border-[#C08261] shadow-md m-5 ">
+          {" "}
+          <div className="table-container" style={tableStyles}>
+            <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
+              <thead className="bg-[#C08261]">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-4 font-medium text-gray-900"
+                  >
+                    Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-4 font-medium text-gray-900"
+                  >
+                    Category
+                  </th>
+                  <th
+                    // scope="col"
+                    className="px-6 py-4  font-medium text-gray-900"
+                  >
+                    Description
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-4 font-medium text-gray-900"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 border-t border-gray-100 ">
+                {(searchResults.length > 0
+                  ? searchResults
+                  : products || []
+                ).map((product, index) => (
                   <tr
                     key={product.id}
                     className={`hover:bg-gray-50 ${
@@ -256,41 +273,41 @@ function Products() {
                       </div>
                     </td>
                   </tr>
-                )
-              )}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex justify-center mb-4">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => handlePageChange(index + 1)}
+                className={`mx-2 px-4 py-2 rounded ${
+                  pageNumber === index + 1
+                    ? "bg-[#C08261] text-white"
+                    : "bg-white text-[#C08261] border border-[#C08261]"
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex justify-center mt-4">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={`mx-2 px-4 py-2 rounded ${
-                pageNumber === index + 1
-                  ? "bg-[#C08261] text-white"
-                  : "bg-white text-[#C08261] border border-[#C08261]"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
+        {editingProduct && (
+          <ProductForm
+            product={editingProduct}
+            onEdit={handleSaveEdit}
+            onClose={handleEditFormClose}
+          />
+        )}
+        {isAddProductFormVisible && (
+          <AddProductForm
+            // onSave={handleSaveEdit}
+            onClose={() => setIsAddProductFormVisible(false)}
+          />
+        )}
       </div>
-      {editingProduct && (
-        <ProductForm
-          product={editingProduct}
-          onEdit={handleSaveEdit}
-          onClose={handleEditFormClose}
-        />
-      )}
-      {isAddProductFormVisible && (
-        <AddProductForm
-          onSave={handleAddProduct}
-          onClose={() => setIsAddProductFormVisible(false)}
-        />
-      )}
-    </div>
+    </>
   );
 }
 

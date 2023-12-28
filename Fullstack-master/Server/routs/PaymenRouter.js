@@ -8,6 +8,8 @@ const paymentsController = require("../controlers/PaymentControler");
 router.post("/charge",authentication.authenticateToken, paymentsController.newpayment);
 router.get("/payments", paymentsController.getpayments);
 
+router.get("/payment/:page/:limit", paymentsController.getpagipayments);
+
 router.get("/paymentidUser/:userid", paymentsController.getpaymentidUser);
 router.get("/paymentid/:payment_id", paymentsController.getpaymentid);
 

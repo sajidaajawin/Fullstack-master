@@ -21,25 +21,21 @@ const getShopid = async (req, res) => {
 };
 
 const newShop = async (req, res) => {
+  const url = res.locals.site;
+
   try {
     const {
       workshop_name,
       workshop_dis,
       workshop_title,
     } = req.body;
-    const product_img = req?.file?.path ? req.file.path : "majdi";
-    // console.log(
-    //   product_name,
-    //   category_id,
-    //   price,
-    //   user_id,
-    //   product_img,
-    //   product_dis
-    // );
+   
+    
     const newblog = await workshop.newShop(
       workshop_name,
       workshop_dis,
       workshop_title,
+      url
     
     );
 
@@ -83,10 +79,31 @@ const updateShop = async (req, res) => {
     throw error;
   }
 };
+
+const updatedImage = async (req, res) => {
+  const workshop_id = req.params.workshop_id;
+  const workshop_img = res.locals.site;
+  console.log(workshop_img);
+
+  // console.log(birthday);
+  try {
+    const result = await workshop.updatedImage(
+      workshop_id,
+
+      workshop_img
+    );
+
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 module.exports = {
   getAllShop,
   getShopid,
   newShop,
   deleteShop,
   updateShop,
+  updatedImage
 };

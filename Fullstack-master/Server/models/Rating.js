@@ -87,7 +87,19 @@ function getRatingByUser(user_id) {
 }
 
 function getRatingByproduct(product_id) {
-  const queryText = "SELECT * FROM ratings WHERE product_id = $1 ";
+  const queryText = `  SELECT 
+  ratings.rating_id,
+  ratings.user_id,
+  ratings.product_id,
+  ratings.rating,
+  ratings.comment,
+  ratings.created_at,
+  ratings.is_deleted AS rating_is_deleted,
+  users.username
+FROM ratings
+JOIN users ON ratings.user_id = users.user_id
+WHERE ratings.product_id = $1 AND ratings.is_deleted = false;
+`;
 
   // "SELECT c.comment_text, u.username FROM comments c " +
   // "JOIN users u ON c.user_id = u.user_id " +
@@ -97,10 +109,54 @@ function getRatingByproduct(product_id) {
   return db.query(queryText, valuse);
 }
 
+function updateS(
+  rating_id,
+  user_id,
+  product_id,
+  rating,
+  comment,
+  created_at,
+  is_deleted
+) {
+  const queryText = `
+    UPDATE ratings 
+    SET 
+      user_id = COALESCE($2, user_id),
+      product_id = COALESCE($3, product_id),
+      rating = COALESCE($4, rating),
+      comment = COALESCE($5, comment),
+      created_at = COALESCE($6, created_at),
+      is_deleted = COALESCE($7, is_deleted)
+    WHERE 
+    rating_id = $1 
+    RETURNING *`;
+
+  const values = [
+    rating_id,
+    user_id,
+    product_id,
+    rating,
+    comment,
+    created_at,
+    is_deleted,
+  ];
+
+  return db.query(queryText, values);
+}
+
+function SoftDeletes(rating_id) {
+  const queryText =
+    "UPDATE ratings SET is_deleted = true WHERE rating_id = $1 AND is_deleted = false RETURNING *";
+  const valuse = [rating_id];
+  return db.query(queryText, valuse);
+}
+
 module.exports = {
   createRating,
   getAllRating,
   getRatingByUserAndProduct,
   getRatingByUser,
   getRatingByproduct,
+  SoftDeletes,
+  updateS,
 };
